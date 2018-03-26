@@ -30,6 +30,10 @@ y = np.append(0, (radii*np.sin(angles)).flatten())
 # Compute z to make the pringle surface.
 z = np.sin(-x*y)
 
+print 'x.shape: ', x.shape
+print 'y.shape: ', y.shape
+print 'z.shape: ', z.shape
+
 fig = plt.figure()
 ax = fig.gca(projection='3d')
 
