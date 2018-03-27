@@ -47,6 +47,12 @@ class BenchmarkFunction ( object ) :
 
         return np.zeros( ( X.shape[0], 1 ) )
 
+    def fig( self ) :
+        return self.m_fig
+
+    def axes( self ) :
+        return self.m_axes
+
     def __call__( self, val ) :
         self._eval( val )
 
