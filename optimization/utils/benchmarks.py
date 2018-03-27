@@ -82,7 +82,7 @@ class BenchmarkFunction ( object ) :
         return self.m_axesContour
 
     def __call__( self, val ) :
-        self._eval( val )
+        return self._eval( val )
 
     def _plotBase1D( self ) :
 
@@ -95,8 +95,12 @@ class BenchmarkFunction ( object ) :
 
     def _plotBase2D( self ) :
 
-        self.m_axes.set_xlim( self.m_min, self.m_max )
-        self.m_axes.set_ylim( self.m_min, self.m_max )
+        self.m_axes.set_xlim3d( [self.m_min, self.m_max] )
+        self.m_axes.set_ylim3d( [self.m_min, self.m_max] )
+        self.m_axes.set_zlim3d( [0, 100.0] )
+
+        self.m_axesContour.set_xlim( [self.m_min, self.m_max] )
+        self.m_axesContour.set_ylim( [self.m_min, self.m_max] )
 
         _xx = np.arange( self.m_min, self.m_max, self.m_step )
         _yy = np.arange( self.m_min, self.m_max, self.m_step )
@@ -145,7 +149,7 @@ class BenchmarkFunction ( object ) :
 
         self.m_axes.plot( _xx, _yy, _zz, 'ro' )
 
-        self.m_axesContour.plot( _xx, _yy, 'ro' )
+        self.m_axesContour.plot( _xx, _yy, 'rx' )
 
     ## Plot a sequence of samples in the function surface
     ## @param self the object pointer
@@ -174,6 +178,8 @@ class BenchmarkFunction ( object ) :
         _zz = self._eval( X )
 
         self.m_axes.plot( _xx, _yy, _zz, 'ro' )
+
+        self.m_axesContour.plot( _xx, _yy, 'rx' )
 
     ## Plot a single sample in the function surface
     ## @param self the object pointer

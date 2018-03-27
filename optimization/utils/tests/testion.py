@@ -1,3 +1,6 @@
+
+from __future__ import print_function
+
 import matplotlib.pyplot as plt
 import numpy as np
 plt.ion() ## Note this correction
@@ -9,11 +12,11 @@ x=list()
 y=list()
 
 while i <1000:
-    temp_y=np.random.random();
-    x.append(i);
-    y.append(temp_y);
-    plt.scatter(i,temp_y);
-    i+=1;
+    temp_y=np.random.random()
+    x.append(i)
+    y.append(temp_y)
+    plt.scatter(i,temp_y)
+    i+=1
     plt.show()
     plt.pause(0.0001) #Note this correction
-    print 'fooooo'
+    print( 'fooooo' )

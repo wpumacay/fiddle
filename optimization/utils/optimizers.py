@@ -8,138 +8,159 @@ import matplotlib.pyplot as plt
 class BaseOptimizer ( object ) :
 
 
-	def __init__( self, ndim, xmin, xmax, maxIter = 100 ) :
+    def __init__( self, ndim, xmin, xmax, maxIter = 100 ) :
 
-		self.m_ndim = ndim
-		self.m_xmin = xmin
-		self.m_xmax = xmax
+        self.m_ndim = ndim
+        self.m_xmin = xmin
+        self.m_xmax = xmax
 
-		self.m_currentNumIters = 0
-		self.m_maxIter = maxIter
+        self.m_currentNumIters = 0
+        self.m_maxIter = maxIter
 
-		self.m_refFunctionTarget = None
-		self.m_refPlotFig = None
-		self.m_refPlotAxes = None
-		self.m_refPlotFigContour = None
-		self.m_refPlotAxesContour = None
+        self.m_refFunctionTarget = None
+        self.m_refPlotFig = None
+        self.m_refPlotAxes = None
+        self.m_refPlotFigContour = None
+        self.m_refPlotAxesContour = None
 
-		self.m_currentBest = None
+        self.m_currentBest = None
 
-	def setFunctionTarget( self, fcnTarget ) :
+    def setFunctionTarget( self, fcnTarget ) :
 
-		self.m_refFunctionTarget = fcnTarget
+        self.m_refFunctionTarget = fcnTarget
 
-		self.m_refPlotFig = fcnTarget.fig()
-		self.m_refPlotAxes = fcnTarget.axes()
-		self.m_refPlotFigContour = fcnTarget.figContour()
-		self.m_refPlotAxesContour = fcnTarget.axesContour()
+        self.m_refPlotFig = fcnTarget.fig()
+        self.m_refPlotAxes = fcnTarget.axes()
+        self.m_refPlotFigContour = fcnTarget.figContour()
+        self.m_refPlotAxesContour = fcnTarget.axesContour()
 
-	def _stopCondition( self ) :
+    def _stopCondition( self ) :
 
-		return self.m_currentNumIters >= self.m_maxIter
+        return self.m_currentNumIters >= self.m_maxIter
 
-	def _start( self ) :
+    def _start( self ) :
 
-		self.m_currentBest = None
-		self.m_currentNumIters = 0
+        self.m_currentBest = None
+        self.m_currentNumIters = 0
 
-	def _step( self ) :
-		# Override this
-		pass
+    def _step( self ) :
+        # Override this
+        pass
 
-	def _end( self ) :
+    def _end( self ) :
 
-		pass
+        pass
 
-	def run( self ) :
+    def run( self ) :
 
-		if self.m_refFunctionTarget is None :
-			print( 'BaseOptimizer> did not set target function' )
-			raise AssertionError
+        if self.m_refFunctionTarget is None :
+            print( 'BaseOptimizer> did not set target function' )
+            raise AssertionError
 
-		self._start()
+        self._start()
 
-		while not self._stopCondition() :
+        while not self._stopCondition() :
 
-			self._step()
+            self._step()
 
-		self._end()
+        self._end()
 
 
 class PSOparticle :
 
-	def __init__( self, ndim ) :
+    def __init__( self, ndim ) :
 
-		self.pos = np.zeros( ( 1, ndim ) )
-		self.pBestPos = np.zeros( ( 1, ndim ) )
-		self.pBestCost = 0.0
-		self.vel = np.zeros( ( 1, ndim ) )
-		self.cost = 0.0
+        self.pos = np.zeros( ( 1, ndim ) )
+        self.pBestPos = np.zeros( ( 1, ndim ) )
+        self.pBestCost = 0.0
+        self.vel = np.zeros( ( 1, ndim ) )
+        self.cost = 0.0
 
 class PSOoptimizer( BaseOptimizer ) :
 
 
-	def __init__( self, ndim, xmin, xmax, populationSize, w, c1, c2, maxIter = 100 ) :
+    def __init__( self, ndim, xmin, xmax, populationSize, w, c1, c2, maxIter = 100 ) :
 
-		super( PSOoptimizer, self ).__init__( self, ndim, xmin, xmax, maxIter )
+        super( PSOoptimizer, self ).__init__( ndim, xmin, xmax, maxIter )
 
-		self.m_populationSize = populationSize
-		self.m_particles = [ PSOparticle( ndim ) for _ in range( populationSize ) ]
+        self.m_populationSize = populationSize
+        self.m_particles = [ PSOparticle( ndim ) for _ in range( populationSize ) ]
 
-		self.m_bestParticle = None
+        self.m_bestParticle = PSOparticle( ndim )
+        self.m_avgPosition = np.zeros( ( 1, ndim ) )
 
-		self.m_w = w
-		self.m_c1 = c1
-		self.m_c2 = c2
+        self.m_w = w
+        self.m_c1 = c1
+        self.m_c2 = c2
 
-	def _start( self ) :
-		# initialize population
+    def particles( self ) :
+        return self.m_particles
 
-		self.m_bestParticle = None
+    def bestParticle( self ) :
+        return self.m_bestParticle
 
-		for p in self.m_particles :
+    def avgPosition( self ) :
+        return self.m_avgPosition
 
-			p.vel = np.random.uniform( 0.0, 0.1, ( 1, self.m_ndim ) )
-			p.pos = np.random.uniform( self.m_xmin, self.m_xmax, ( 1, self.m_ndim ) )
-			p.cost = self.m_refFunctionTarget( p.pos )
-			p.pBestPos = p.pos
-			p.pBestCost = p.cost
+    def _start( self ) :
+        # initialize population
 
-			if self.m_bestParticle is None :
-				self.m_bestParticle = p
+        self.m_bestParticle = PSOparticle( self.m_ndim )
+        self.m_bestParticle.cost = 1000000.0
 
-			elif self.m_bestParticle.cost > p.cost :
-				self.m_bestParticle = p
+        for p in self.m_particles :
 
-	def _step( self ) :
+            # p.vel = np.random.uniform( 0.0, 0.01, ( 1, self.m_ndim ) )
+            p.vel = np.zeros( ( 1, self.m_ndim ) )
+            p.pos = np.random.uniform( self.m_xmin, self.m_xmax, ( 1, self.m_ndim ) )
+            p.cost = self.m_refFunctionTarget( p.pos )
+            p.pBestPos = p.pos
+            p.pBestCost = p.cost
 
-		w = self.m_w
-		c1 = self.m_c1
-		c2 = self.m_c2
+            if self.m_bestParticle.cost > p.cost :
+                self.m_bestParticle.cost = p.cost
+                self.m_bestParticle.pos = np.copy( p.pos )
 
-		# Asynchronus PSO implementation
+        print( 'initialized optimizer' )
 
-		for p in self.m_particles :
+    def _step( self ) :
 
-			# Update each particle
-			p.vel = w * p.vel + 
-					c1 * np.random.random( p.vel.shape ) * ( p.pBestPos - p.pos ) +
-					c2 * np.random.random( p.vel.shape ) * ( self.m_bestParticle.pos - p.pos )
-			p.pos = p.pos + p.vel
+        w = self.m_w
+        c1 = self.m_c1
+        c2 = self.m_c2
 
-			# Evaluate each particle 
-			# TODO: Should vectorize to speed up calculation
-			p.cost = self.m_refFunctionTarget( p.pos )
+        # Asynchronus PSO implementation
 
-			if p.cost <= p.pBestCost :
-				p.pBestCost = p.cost
-				p.pBestPos = np.copy( p.pos )
+        for p in self.m_particles :
 
-				if p.cost <= self.m_bestParticle.cost :
-					# Using shared reference to best - is it safe? - it seems so
-					self.m_bestParticle = p
+            # Update each particle
+            _velInertial = w * p.vel
+            _velCognitive = c1 * 0.1 * np.random.random( p.vel.shape ) * ( p.pBestPos - p.pos )
+            _velSocial = c2 * 0.1 * np.random.random( p.vel.shape ) * ( self.m_bestParticle.pos - p.pos )
 
+            p.vel = _velInertial + _velCognitive + _velSocial
+            p.pos = p.pos + p.vel
 
-	def _end( self ) :
+            # Evaluate each particle 
+            # TODO: Should vectorize to speed up calculation
+            p.cost = self.m_refFunctionTarget( p.pos )
 
-		pass
+            if p.cost <= p.pBestCost :
+                p.pBestCost = p.cost
+                p.pBestPos = np.copy( p.pos )
+
+                if p.cost <= self.m_bestParticle.cost :
+                    # Using shared reference to best - is it safe? - it seems so
+                    self.m_bestParticle.cost = p.cost
+                    self.m_bestParticle.pos = p.pos
+
+        self.m_avgPosition = np.zeros( ( 1, self.m_ndim ) )
+
+        for i in range( len( self.m_particles ) ) :
+            self.m_avgPosition += self.m_particles[i].pos
+
+        self.m_avgPosition = self.m_avgPosition / self.m_populationSize
+
+    def _end( self ) :
+
+        pass
