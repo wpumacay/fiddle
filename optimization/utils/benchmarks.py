@@ -97,7 +97,7 @@ class BenchmarkFunction ( object ) :
 
         self.m_axes.set_xlim3d( [self.m_min, self.m_max] )
         self.m_axes.set_ylim3d( [self.m_min, self.m_max] )
-        self.m_axes.set_zlim3d( [0, 100.0] )
+        self.m_axes.set_zlim3d( [0, 1.0] )
 
         self.m_axesContour.set_xlim( [self.m_min, self.m_max] )
         self.m_axesContour.set_ylim( [self.m_min, self.m_max] )
@@ -258,7 +258,7 @@ class BMSchwefel( BenchmarkFunction ) :
 
 class BMFunction3( BenchmarkFunction ) :
 
-    def __init__( self, ndim, plottingMode, xmin = -10, xmax = 10, step = 0.1 ) :
+    def __init__( self, ndim, plottingMode, xmin = -10, xmax = 10, step = 0.25 ) :
 
         super( BMFunction3, self ).__init__( ndim, plottingMode, xmin, xmax, step )
 

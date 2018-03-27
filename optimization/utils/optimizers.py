@@ -79,7 +79,7 @@ class PSOparticle :
 class PSOoptimizer( BaseOptimizer ) :
 
 
-    def __init__( self, ndim, xmin, xmax, populationSize, w, c1, c2, maxIter = 100 ) :
+    def __init__( self, ndim, xmin, xmax, populationSize, w, c1, c2, k = 0.5, maxIter = 100 ) :
 
         super( PSOoptimizer, self ).__init__( ndim, xmin, xmax, maxIter )
 
@@ -92,6 +92,7 @@ class PSOoptimizer( BaseOptimizer ) :
         self.m_w = w
         self.m_c1 = c1
         self.m_c2 = c2
+        self.m_k = k # velocity clamping
 
     def particles( self ) :
         return self.m_particles
@@ -106,7 +107,7 @@ class PSOoptimizer( BaseOptimizer ) :
         # initialize population
 
         self.m_bestParticle = PSOparticle( self.m_ndim )
-        self.m_bestParticle.cost = 1000000.0
+        self.m_bestParticle.cost = -1000000.0
 
         for p in self.m_particles :
 
@@ -117,7 +118,7 @@ class PSOoptimizer( BaseOptimizer ) :
             p.pBestPos = p.pos
             p.pBestCost = p.cost
 
-            if self.m_bestParticle.cost > p.cost :
+            if self.m_bestParticle.cost < p.cost :
                 self.m_bestParticle.cost = p.cost
                 self.m_bestParticle.pos = np.copy( p.pos )
 
@@ -128,6 +129,12 @@ class PSOoptimizer( BaseOptimizer ) :
         w = self.m_w
         c1 = self.m_c1
         c2 = self.m_c2
+        k = self.m_k
+        vmin = -k * ( self.m_xmax - self.m_xmin ) / 2.0
+        vmax = k * ( self.m_xmax - self.m_xmin ) / 2.0
+
+        # print( 'vmin: ', vmin )
+        # print( 'vmax: ', vmax )
 
         # Asynchronus PSO implementation
 
@@ -135,21 +142,27 @@ class PSOoptimizer( BaseOptimizer ) :
 
             # Update each particle
             _velInertial = w * p.vel
-            _velCognitive = c1 * 0.1 * np.random.random( p.vel.shape ) * ( p.pBestPos - p.pos )
-            _velSocial = c2 * 0.1 * np.random.random( p.vel.shape ) * ( self.m_bestParticle.pos - p.pos )
+            _velCognitive = c1 * np.random.random( p.vel.shape ) * ( p.pBestPos - p.pos )
+            _velSocial = c2 * np.random.random( p.vel.shape ) * ( self.m_bestParticle.pos - p.pos )
 
             p.vel = _velInertial + _velCognitive + _velSocial
+            # clamp velocity
+            _v = np.linalg.norm( p.vel )
+            if _v > 0.0001 :
+                _vClipped = np.clip( _v, vmin, vmax )
+                p.vel = ( p.vel / _v ) * _vClipped
+
             p.pos = p.pos + p.vel
 
             # Evaluate each particle 
             # TODO: Should vectorize to speed up calculation
             p.cost = self.m_refFunctionTarget( p.pos )
 
-            if p.cost <= p.pBestCost :
+            if p.cost >= p.pBestCost :
                 p.pBestCost = p.cost
                 p.pBestPos = np.copy( p.pos )
 
-                if p.cost <= self.m_bestParticle.cost :
+                if p.cost >= self.m_bestParticle.cost :
                     # Using shared reference to best - is it safe? - it seems so
                     self.m_bestParticle.cost = p.cost
                     self.m_bestParticle.pos = p.pos

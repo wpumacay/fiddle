@@ -13,16 +13,16 @@ G_DIMENSION = 2
 G_DOMAIN_MIN = -10
 G_DOMAIN_MAX = 10
 
-G_PSO_POPULATION_SIZE = 20
-G_PSO_W = 1
+G_PSO_POPULATION_SIZE = 100
+G_PSO_W = 0.5
 G_PSO_C1 = 2
 G_PSO_C2 = 2
 
-_bmFunction = BMSphere( G_DIMENSION, BenchmarkFunction.PLOTTING_MODE_WIREFRAME,
-                        xmin = G_DOMAIN_MIN, xmax = G_DOMAIN_MAX )
+# _bmFunction = BMSphere( G_DIMENSION, BenchmarkFunction.PLOTTING_MODE_WIREFRAME,
+#                         xmin = G_DOMAIN_MIN, xmax = G_DOMAIN_MAX )
 
-# _bmFunction = BMFunction3( 2, BenchmarkFunction.PLOTTING_MODE_WIREFRAME,
-#                            xmin = G_DOMAIN_MIN, xmax = G_DOMAIN_MAX )
+_bmFunction = BMFunction3( G_DIMENSION, BenchmarkFunction.PLOTTING_MODE_WIREFRAME,
+                           xmin = G_DOMAIN_MIN, xmax = G_DOMAIN_MAX )
 
 _optimizer = PSOoptimizer( G_DIMENSION, G_DOMAIN_MIN, G_DOMAIN_MAX, 
                            G_PSO_POPULATION_SIZE, 
