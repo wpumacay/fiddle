@@ -98,6 +98,7 @@ class PSOoptimizer( BaseOptimizer ) :
 		self.m_bestParticle = None
 
 		for p in self.m_particles :
+
 			p.vel = np.random.uniform( 0.0, 0.1, ( 1, self.m_ndim ) )
 			p.pos = np.random.uniform( self.m_xmin, self.m_xmax, ( 1, self.m_ndim ) )
 			p.cost = self.m_refFunctionTarget( p.pos )
@@ -132,7 +133,7 @@ class PSOoptimizer( BaseOptimizer ) :
 
 			if p.cost <= p.pBestCost :
 				p.pBestCost = p.cost
-				p.pBestPos = p.pos
+				p.pBestPos = np.copy( p.pos )
 
 				if p.cost <= self.m_bestParticle.cost :
 					# Using shared reference to best - is it safe? - it seems so

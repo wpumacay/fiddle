@@ -4,6 +4,8 @@ from __future__ import print_function
 import numpy as np
 
 import matplotlib.pyplot as plt
+
+from matplotlib import animation
 from mpl_toolkits.mplot3d import axes3d
 
 class BenchmarkFunction ( object ) :
@@ -29,8 +31,11 @@ class BenchmarkFunction ( object ) :
 
         if self.m_ndim > 2 :
             print( 'BenchmarkFunction> info: plotting not enable for more than 2D' )
+
         elif self.m_ndim > 0 :
+
             self.m_fig = plt.figure()
+
             if self.m_ndim == 2 : 
                 self.m_axes = self.m_fig.add_subplot( 111, projection = '3d' )
             else :
@@ -54,6 +59,15 @@ class BenchmarkFunction ( object ) :
             raise AssertionError
 
         return np.zeros( ( X.shape[0], 1 ) )
+
+    def ndim( self ) :
+        return self.m_ndim
+
+    def min( self ) :
+        return self.m_min
+
+    def max( self ) :
+        return self.m_max
 
     def fig( self ) :
         return self.m_fig
@@ -96,15 +110,6 @@ class BenchmarkFunction ( object ) :
             for j in range( _dim[1] ) :
                 _Z[i,j] = self._eval( np.array( [ [ _X[i,j], _Y[i,j] ] ] ) )
 
-        # print( 'X: ' )
-        # print( _X )
-
-        # print( 'Y: ' )
-        # print( _Y )
-
-        # print( 'Z: ' )
-        # print( _Z )
-
         if self.m_plottingMode == BenchmarkFunction.PLOTTING_MODE_WIREFRAME :
             self.m_axes.plot_wireframe( _X, _Y, _Z )
 
@@ -117,6 +122,7 @@ class BenchmarkFunction ( object ) :
         else :
             print( 'BenchmarkFunction> warn: wrong plotting mode set ', self.m_plottingMode )
 
+        self.m_axesContour.contour( _X, _Y, _Z )
 
     def plotBase( self ) :
         
@@ -127,9 +133,9 @@ class BenchmarkFunction ( object ) :
 
     def _plotSequence1D( self, seqX ) :
 
-        _yy = self._eval( _xx )
+        _yy = self._eval( seqX )
 
-        self.m_axes.plot( _xx, _yy, 'r' )
+        self.m_axes.plot( seqX, _yy, 'ro' )
 
     def _plotSequence2D( self, seqX ) :
 
@@ -137,11 +143,13 @@ class BenchmarkFunction ( object ) :
         _yy = seqX[:,1]
         _zz = self._eval( seqX )
 
-        self.m_axes.plot( _xx, _yy, _zz, 'r' )
+        self.m_axes.plot( _xx, _yy, _zz, 'ro' )
+
+        self.m_axesContour.plot( _xx, _yy, 'ro' )
 
     ## Plot a sequence of samples in the function surface
     ## @param self the object pointer
-    ## @param X a matrix with rows being the samples to plot in the function surface
+    ## @param seqX a matrix with rows being the samples to plot in the function surface
     def plotSequence( self, seqX ) :
 
         if seqX.shape[1] != self.m_ndim :
@@ -153,17 +161,40 @@ class BenchmarkFunction ( object ) :
         elif self.m_ndim == 2 :
             self._plotSequence2D( seqX )        
 
-    def plotSingle( self, X ) :
-        # Override this
-        pass
+    def _plotSingle1D( self, X ) :
 
+        _Y = self._eval( X )
+
+        self.m_axes.plot( X, _Y, 'ro' )
+
+    def _plotSingle2D( self, X ) :
+
+        _xx = X[:,0]
+        _yy = X[:,1]
+        _zz = self._eval( X )
+
+        self.m_axes.plot( _xx, _yy, _zz, 'ro' )
+
+    ## Plot a single sample in the function surface
+    ## @param self the object pointer
+    ## @param X a single row being the sample to be plot in the function surface
+    def plotSingle( self, X ) :
+
+        if X.shape[1] != self.m_ndim :
+            print( 'BenchmarkFunction> error: dimension mismatch' )
+            raise AssertionError
+
+        if self.m_ndim == 1 :
+            self._plotSingle1D( X )
+        elif self.m_ndim == 2 :
+            self._plotSingle2D( X )
 
 class BMSphere( BenchmarkFunction ) :
 
 
-    def __init__( self, ndim, plottingMode, xmin = -10, xmax = 10, step = 0.1 ) :
+    def __init__( self, ndim, plottingMode, xmin = -10, xmax = 10, step = 0.25 ) :
 
-        super( BMSphere, self ).__init__( ndim, plottingMode )
+        super( BMSphere, self ).__init__( ndim, plottingMode, xmin, xmax, step )
 
     def _eval( self, X ) :
         super( BMSphere, self )._eval( X )
@@ -221,7 +252,7 @@ class BMSchwefel( BenchmarkFunction ) :
 
 class BMFunction3( BenchmarkFunction ) :
 
-    def __init__( self, ndim, plottingMode, xmin = -10, xmax = 10, step = 0.2 ) :
+    def __init__( self, ndim, plottingMode, xmin = -10, xmax = 10, step = 0.1 ) :
 
         super( BMFunction3, self ).__init__( ndim, plottingMode, xmin, xmax, step )
 
