@@ -24,6 +24,9 @@ class BenchmarkFunction ( object ) :
         self.m_fig = None
         self.m_axes = None
 
+        self.m_figContour = None
+        self.m_axesContour = None
+
         if self.m_ndim > 2 :
             print( 'BenchmarkFunction> info: plotting not enable for more than 2D' )
         elif self.m_ndim > 0 :
@@ -32,6 +35,11 @@ class BenchmarkFunction ( object ) :
                 self.m_axes = self.m_fig.add_subplot( 111, projection = '3d' )
             else :
                 self.m_axes = self.m_fig.add_subplot( 111 )
+
+            if self.m_ndim == 2 :
+                self.m_figContour = plt.figure()
+                self.m_axesContour = self.m_figContour.add_subplot( 111 )
+
         else :
             print( 'BenchmarkFunction> warn: less than 1d was given' )
             raise AssertionError
@@ -52,6 +60,12 @@ class BenchmarkFunction ( object ) :
 
     def axes( self ) :
         return self.m_axes
+
+    def figContour( self ) :
+        return self.m_figContour
+
+    def axesContour( self ) :
+        return self.m_axesContour
 
     def __call__( self, val ) :
         self._eval( val )
