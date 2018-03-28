@@ -72,7 +72,7 @@ class ConfigOptPSO :
     def __init__( self, ndim ) :
 
         self.ID = 'PSO'
-        self.POPULATION_SIZE = 100
+        self.POPULATION_SIZE = 200
         self.W = 0.5
         self.C1 = 2
         self.C2 = 2

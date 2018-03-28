@@ -1,0 +1,2 @@
+
+message( "CONFIGURING CORE" )
