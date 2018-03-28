@@ -7,8 +7,6 @@ import sys
 import optimizers
 import benchmarks
 
-DIMENSIONS = 2
-
 # Objective functions config ####################################
 
 class ConfigFcnSphere :
@@ -60,7 +58,7 @@ class ConfigFcnShafferFcn6 :
         self.MINIMIZE = False
         self.GLOBAL_OPTIMA_POSITION = np.zeros( ( 1, ndim ) )
         self.GLOBAL_OPTIMA_VALUE = 1.0
-        self.DOMAIN = [ -10, 10 ]
+        self.DOMAIN = [ -100, 100 ]
         self.RANGE = [ 0, 1 ]
 
 # ###############################################################
@@ -72,8 +70,8 @@ class ConfigOptPSO :
     def __init__( self, ndim ) :
 
         self.ID = 'PSO'
-        self.POPULATION_SIZE = 200
-        self.W = 0.5
+        self.POPULATION_SIZE = 1000
+        self.W = 1
         self.C1 = 2
         self.C2 = 2
         self.K = 0.5

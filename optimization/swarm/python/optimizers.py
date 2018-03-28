@@ -105,6 +105,15 @@ class PSOoptimizer( BaseOptimizer ) :
         self.m_c2 = c2
         self.m_k = k # velocity clamping
 
+    def isInDomain( self, pos ) :
+
+        for i in range( len( pos ) ) :
+
+            if pos[i] < self.m_xmin or pos[i] > self.m_xmax :
+                return False
+
+        return True
+
     def particles( self ) :
         return self.m_particles
 
@@ -167,6 +176,7 @@ class PSOoptimizer( BaseOptimizer ) :
                 p.vel = ( p.vel / _v ) * _vClipped
 
             p.pos = p.pos + p.vel
+            p.pos = np.clip( p.pos, self.m_xmin, self.m_xmax )
 
             # Evaluate each particle 
             # TODO: Should vectorize to speed up calculation
