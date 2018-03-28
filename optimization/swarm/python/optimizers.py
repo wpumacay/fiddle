@@ -210,3 +210,112 @@ class PSOoptimizer( BaseOptimizer ) :
     def _end( self ) :
 
         pass
+
+class ACOant :
+
+    def __init__( self, ndim ) :
+
+        self.pos = np.zeros( ( 1, ndim ) )
+        self.cost = 0.0
+
+class ACOoptimizer( BaseOptimizer ) :
+
+
+    def __init__( self, ndim, xmin, xmax, populationSize, alpha, maxIter = 100 ) :
+
+        super( ACOoptimizer, self ).__init__( ndim, xmin, xmax, maxIter )
+
+        self.m_populationSize = populationSize
+        self.m_ants = [ ACOant( ndim ) for _ in range( populationSize ) ]
+
+        self.m_avgPosition = np.zeros( ( 1, ndim ) )
+
+        self.m_alpha = alpha
+
+    def isInDomain( self, pos ) :
+
+        for i in range( len( pos ) ) :
+
+            if pos[i] < self.m_xmin or pos[i] > self.m_xmax :
+                return False
+
+        return True
+
+    def ants( self ) :
+        return self.m_ants
+
+    def bestAnt( self ) :
+        return self.m_bestAnt
+
+    def avgPosition( self ) :
+        return self.m_avgPosition
+
+    def _start( self ) :
+        # initialize population
+
+        self.m_bestAnt = ACOant( self.m_ndim )
+        if self.m_mustMinimize :
+            self.m_bestAnt.cost = 1000000.0
+        else :
+            self.m_bestAnt.cost = -1000000.0
+
+        for a in self.m_ants :
+
+            a.pos = np.random.uniform( - self.m_xmin, self.m_xmax, ( 1, self.m_ndim ) )
+            a.cost = self.m_refFunctionTarget( a.pos )
+
+            if self._isBetter( a.cost, self.m_bestAnt.cost ) :
+                self.m_bestAnt.cost = a.cost
+                self.m_bestAnt.pos = np.copy( a.pos )
+
+        _newBest = ACOant( self.m_ndim )
+        _newBest.pos = self.m_bestAnt.pos + ( self.m_bestAnt.pos * 0.01 )
+        _newBest.cost = self.m_refFunctionTarget( _newBest.pos )
+
+        if self._isBetter( _newBest.cost, self.m_bestAnt.cost ) :
+            self.m_direction = True
+        else :
+            self.m_direction = False
+
+        print( 'initialized optimizer' )
+
+    def _step( self ) :
+        for a in self.m_ants :
+            _dx = np.random.uniform( -self.m_alpha, self.m_alpha, ( 1, self.m_ndim ) )
+
+            if self.m_direction == True :
+                a.pos = self.m_bestAnt.pos + _dx
+            else :
+                a.pos = self.m_bestAnt.pos - _dx
+
+            a.pos = np.clip( a.pos, self.m_xmin, self.m_xmax )
+
+            # Evaluate each particle
+            # TODO: Should vectorize to speed up calculation
+            a.cost = self.m_refFunctionTarget( a.pos )
+
+            if self._isBetter( a.cost, self.m_bestAnt.cost ) :
+                self.m_bestAnt.cost = a.cost
+                self.m_bestAnt.pos = a.pos
+
+        self.m_avgPosition = np.zeros( ( 1, self.m_ndim ) )
+
+        for i in range( len( self.m_ants ) ) :
+            self.m_avgPosition += self.m_ants[i].pos
+
+        self.m_avgPosition = self.m_avgPosition / self.m_populationSize
+
+        print( 'bestPos: ', self.m_bestAnt.pos )
+        print( 'bestCost: ', self.m_bestAnt.cost )
+        print( 'avgPosition: ', self.m_avgPosition )
+
+        # plot stuff
+        for a in self.m_ants :
+
+            self.m_refFunctionTarget.plotSingle( a.pos )
+
+        self.m_alpha = self.m_alpha * 0.8
+
+    def _end( self ) :
+
+        pass

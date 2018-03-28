@@ -58,7 +58,7 @@ class ConfigFcnShafferFcn6 :
         self.MINIMIZE = False
         self.GLOBAL_OPTIMA_POSITION = np.zeros( ( 1, ndim ) )
         self.GLOBAL_OPTIMA_VALUE = 1.0
-        self.DOMAIN = [ -100, 100 ]
+        self.DOMAIN = [ -10, 10 ]
         self.RANGE = [ 0, 1 ]
 
 # ###############################################################
@@ -75,6 +75,14 @@ class ConfigOptPSO :
         self.C1 = 2
         self.C2 = 2
         self.K = 0.5
+
+class ConfigOptACO :
+
+    def __init__( self, ndim ) :
+
+        self.ID = 'ACO'
+        self.POPULATION_SIZE = 5000
+        self.alpha = 4000
 
 # ###############################################################
 
@@ -128,6 +136,9 @@ def GetOptConfig( cOptId, cfgFcn ) :
     if cOptId == 'PSO' :
         return ConfigOptPSO( cfgFcn.DIMENSION )
 
+    elif cOptId == 'ACO' :
+        return ConfigOptACO( cfgFcn.DIMENSION )
+
     else :
         print( 'Obj. Fcn. config requested : ', cOptId, ' was not found' )
         sys.exit()
@@ -146,6 +157,13 @@ def GetOptObj( cOptId, cfgFcn ) :
                                            c1 = _cfgOpt.C1,
                                            c2 = _cfgOpt.C2,
                                            k = _cfgOpt.K )
+
+    elif cOptId == 'ACO' :
+        _optObj = optimizers.ACOoptimizer( cfgFcn.DIMENSION,
+                                           xmin = cfgFcn.DOMAIN[0],
+                                           xmax = cfgFcn.DOMAIN[1],
+                                           populationSize = _cfgOpt.POPULATION_SIZE,
+                                           alpha = _cfgOpt.alpha )
 
     else :
         print( 'Obj. Opt. config requested : ', cOptId, ' was not found' )

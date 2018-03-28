@@ -10,9 +10,13 @@ plt.ion()
 
 # _bmFunction, _optimizer, _cfgFcn, _cfgOpt = config.InitializeProblem( 'Sphere', 'PSO', 2 )
 # _bmFunction, _optimizer, _cfgFcn, _cfgOpt = config.InitializeProblem( 'Ackley', 'PSO', 8 )
-# _bmFunction, _optimizer, _cfgFcn, _cfgOpt = config.InitializeProblem( 'Schwefel', 'PSO', 8 )
-_bmFunction, _optimizer, _cfgFcn, _cfgOpt = config.InitializeProblem( 'ShafferFcn6', 'PSO', 8 )
+# _bmFunction, _optimizer, _cfgFcn, _cfgOpt = config.InitializeProblem( 'Schwefel', 'PSO', 4 )
+# _bmFunction, _optimizer, _cfgFcn, _cfgOpt = config.InitializeProblem( 'ShafferFcn6', 'PSO', 8 )
 
+# _bmFunction, _optimizer, _cfgFcn, _cfgOpt = config.InitializeProblem( 'Sphere', 'ACO', 2 )
+# _bmFunction, _optimizer, _cfgFcn, _cfgOpt = config.InitializeProblem( 'Ackley', 'ACO', 2 )
+# _bmFunction, _optimizer, _cfgFcn, _cfgOpt = config.InitializeProblem( 'Schwefel', 'ACO', 4 )
+_bmFunction, _optimizer, _cfgFcn, _cfgOpt = config.InitializeProblem( 'ShafferFcn6', 'ACO', 8 )
 _optimizer._start()
 
 while True :
