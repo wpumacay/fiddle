@@ -16,6 +16,7 @@ class BaseOptimizer ( object ) :
 
         self.m_currentNumIters = 0
         self.m_maxIter = maxIter
+        self.m_mustMinimize = True
 
         self.m_refFunctionTarget = None
         self.m_refPlotFig = None
@@ -25,14 +26,24 @@ class BaseOptimizer ( object ) :
 
         self.m_currentBest = None
 
-    def setFunctionTarget( self, fcnTarget ) :
+    def setFunctionTarget( self, fcnTarget, mustMinimize ) :
 
         self.m_refFunctionTarget = fcnTarget
+        self.m_mustMinimize = mustMinimize
 
         self.m_refPlotFig = fcnTarget.fig()
         self.m_refPlotAxes = fcnTarget.axes()
         self.m_refPlotFigContour = fcnTarget.figContour()
         self.m_refPlotAxesContour = fcnTarget.axesContour()
+
+    # If minimizing, true if new is less than old
+    # If maximizing, true if new is greater than old
+    def _isBetter( self, valNew, valOld ) :
+
+        if self.m_mustMinimize :
+            return valOld > valNew
+        else :
+            return valOld < valNew
 
     def _stopCondition( self ) :
 
@@ -107,7 +118,10 @@ class PSOoptimizer( BaseOptimizer ) :
         # initialize population
 
         self.m_bestParticle = PSOparticle( self.m_ndim )
-        self.m_bestParticle.cost = -1000000.0
+        if self.m_mustMinimize :
+            self.m_bestParticle.cost = 1000000.0
+        else :
+            self.m_bestParticle.cost = -1000000.0
 
         for p in self.m_particles :
 
@@ -118,7 +132,7 @@ class PSOoptimizer( BaseOptimizer ) :
             p.pBestPos = p.pos
             p.pBestCost = p.cost
 
-            if self.m_bestParticle.cost < p.cost :
+            if self._isBetter( p.cost, self.m_bestParticle.cost ) :
                 self.m_bestParticle.cost = p.cost
                 self.m_bestParticle.pos = np.copy( p.pos )
 
@@ -158,11 +172,11 @@ class PSOoptimizer( BaseOptimizer ) :
             # TODO: Should vectorize to speed up calculation
             p.cost = self.m_refFunctionTarget( p.pos )
 
-            if p.cost >= p.pBestCost :
+            if self._isBetter( p.cost, p.pBestCost ) :
                 p.pBestCost = p.cost
                 p.pBestPos = np.copy( p.pos )
 
-                if p.cost >= self.m_bestParticle.cost :
+                if self._isBetter( p.cost, self.m_bestParticle.cost ) :
                     # Using shared reference to best - is it safe? - it seems so
                     self.m_bestParticle.cost = p.cost
                     self.m_bestParticle.pos = p.pos
@@ -173,6 +187,15 @@ class PSOoptimizer( BaseOptimizer ) :
             self.m_avgPosition += self.m_particles[i].pos
 
         self.m_avgPosition = self.m_avgPosition / self.m_populationSize
+
+        print( 'bestPos: ', self.m_bestParticle.pos )
+        print( 'bestCost: ', self.m_bestParticle.cost )
+        print( 'avgPosition: ', self.m_avgPosition )
+
+        # plot stuff
+        for p in self.m_particles :
+
+            self.m_refFunctionTarget.plotSingle( p.pos )
 
     def _end( self ) :
 

@@ -7,7 +7,7 @@ from benchmarks import *
 plt.ion()
 
 _bmFunction = BMSphere( 2, BenchmarkFunction.PLOTTING_MODE_WIREFRAME )
-# _bmFunction = BMFunction3( 2, BenchmarkFunction.PLOTTING_MODE_WIREFRAME )
+# _bmFunction = BMShafferFcn6( 2, BenchmarkFunction.PLOTTING_MODE_WIREFRAME )
 
 _buff = []
 

@@ -21,7 +21,7 @@ G_PSO_C2 = 2
 # _bmFunction = BMSphere( G_DIMENSION, BenchmarkFunction.PLOTTING_MODE_WIREFRAME,
 #                         xmin = G_DOMAIN_MIN, xmax = G_DOMAIN_MAX )
 
-_bmFunction = BMFunction3( G_DIMENSION, BenchmarkFunction.PLOTTING_MODE_WIREFRAME,
+_bmFunction = BMShafferFcn6( G_DIMENSION, BenchmarkFunction.PLOTTING_MODE_WIREFRAME,
                            xmin = G_DOMAIN_MIN, xmax = G_DOMAIN_MAX )
 
 _optimizer = PSOoptimizer( G_DIMENSION, G_DOMAIN_MIN, G_DOMAIN_MAX, 
@@ -31,8 +31,6 @@ _optimizer = PSOoptimizer( G_DIMENSION, G_DOMAIN_MIN, G_DOMAIN_MAX,
 _optimizer.setFunctionTarget( _bmFunction )
 
 _optimizer._start()
-
-print( 'foo' )
 
 while True :
 

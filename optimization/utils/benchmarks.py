@@ -14,7 +14,7 @@ class BenchmarkFunction ( object ) :
     PLOTTING_MODE_SURFACE       = 1
     # PLOTTING_MODE_TRI_SURFACE   = 2
 
-    def __init__( self, ndim, plottingMode, xmin = -10, xmax = 10, step = 1 ) :
+    def __init__( self, ndim, plottingMode = PLOTTING_MODE_WIREFRAME, xmin = -10, xmax = 10, step = 1 ) :
 
         self.m_ndim = ndim
         self.m_plottingMode = plottingMode
@@ -23,11 +23,15 @@ class BenchmarkFunction ( object ) :
         self.m_min = xmin
         self.m_max = xmax
 
+        self.m_rangeMin = 0
+        self.m_rangeMax = 100
+
         self.m_fig = None
         self.m_axes = None
 
         self.m_figContour = None
         self.m_axesContour = None
+
 
         if self.m_ndim > 2 :
             print( 'BenchmarkFunction> info: plotting not enable for more than 2D' )
@@ -81,6 +85,11 @@ class BenchmarkFunction ( object ) :
     def axesContour( self ) :
         return self.m_axesContour
 
+
+    def setRange( self, rmin, rmax ) :
+        self.m_rangeMin = rmin
+        self.m_rangeMax = rmax
+
     def __call__( self, val ) :
         return self._eval( val )
 
@@ -97,7 +106,7 @@ class BenchmarkFunction ( object ) :
 
         self.m_axes.set_xlim3d( [self.m_min, self.m_max] )
         self.m_axes.set_ylim3d( [self.m_min, self.m_max] )
-        self.m_axes.set_zlim3d( [0, 1.0] )
+        self.m_axes.set_zlim3d( [self.m_rangeMin, self.m_rangeMax] )
 
         self.m_axesContour.set_xlim( [self.m_min, self.m_max] )
         self.m_axesContour.set_ylim( [self.m_min, self.m_max] )
@@ -198,7 +207,7 @@ class BenchmarkFunction ( object ) :
 class BMSphere( BenchmarkFunction ) :
 
 
-    def __init__( self, ndim, plottingMode, xmin = -10, xmax = 10, step = 0.25 ) :
+    def __init__( self, ndim, plottingMode = BenchmarkFunction.PLOTTING_MODE_WIREFRAME, xmin = -10, xmax = 10, step = 0.25 ) :
 
         super( BMSphere, self ).__init__( ndim, plottingMode, xmin, xmax, step )
 
@@ -210,7 +219,7 @@ class BMSphere( BenchmarkFunction ) :
 
 class BMAckley( BenchmarkFunction ) :
 
-    def __init__( self, a, b, c, ndim, plottingMode, xmin = -40, xmax = 40, step = 1 ) :
+    def __init__( self, a, b, c, ndim, plottingMode = BenchmarkFunction.PLOTTING_MODE_WIREFRAME, xmin = -40, xmax = 40, step = 1 ) :
 
         super( BMAckley, self ).__init__( ndim, plottingMode, xmin, xmax, step )
 
@@ -240,7 +249,7 @@ class BMAckley( BenchmarkFunction ) :
 
 class BMSchwefel( BenchmarkFunction ) :
 
-    def __init__( self, ndim, plottingMode, xmin = -500, xmax = 500, step = 10 ) :
+    def __init__( self, ndim, plottingMode = BenchmarkFunction.PLOTTING_MODE_WIREFRAME, xmin = -500, xmax = 500, step = 10 ) :
 
         super( BMSchwefel, self ).__init__( ndim, plottingMode, xmin, xmax, step )
 
@@ -256,14 +265,14 @@ class BMSchwefel( BenchmarkFunction ) :
         return 418.9829 * d - np.sum( X * np.sin( np.sqrt( np.abs( X ) ) ) , axis = 1 )
 
 
-class BMFunction3( BenchmarkFunction ) :
+class BMShafferFcn6( BenchmarkFunction ) :
 
-    def __init__( self, ndim, plottingMode, xmin = -10, xmax = 10, step = 0.25 ) :
+    def __init__( self, ndim, plottingMode = BenchmarkFunction.PLOTTING_MODE_WIREFRAME, xmin = -10, xmax = 10, step = 0.5 ) :
 
-        super( BMFunction3, self ).__init__( ndim, plottingMode, xmin, xmax, step )
+        super( BMShafferFcn6, self ).__init__( ndim, plottingMode, xmin, xmax, step )
 
     def _eval( self, X ) :
-        super( BMFunction3, self )._eval( X )
+        super( BMShafferFcn6, self )._eval( X )
 
         d = self.m_ndim
 
