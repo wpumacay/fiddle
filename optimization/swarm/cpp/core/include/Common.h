@@ -2,6 +2,7 @@
 #pragma once
 
 #include <cmath>
+#include <cstring>
 #include <vector>
 #include <string>
 #include <fstream>

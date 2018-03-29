@@ -1,6 +1,9 @@
 
 #pragma once
 
+#include <Common.h>
+#include <BenchmarkFunctions.h>
+
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <curand.h>
@@ -14,6 +17,9 @@ namespace optimization
         int ndim;
         int population;
 
+        int vecBufferSize;
+        int costBufferSize;
+
         // Arrays of size "ndim * population"
         double* pos;
         double* vel;
@@ -23,9 +29,14 @@ namespace optimization
         double* bcost;
     };
 
-    void cuPSOupdateParticles( const PSOcudaParticlesInfo& hostParticlesInfo,
-                               const PSOcudaParticlesInfo& devParticlesInfo );
+    void cuPSOcreateParticles( PSOcudaParticlesInfo& devParticlesInfo );
 
-    
+    void cuPSOinitParticles( PSOcudaParticlesInfo& hostParticlesInfo,
+                             PSOcudaParticlesInfo& devParticlesInfo,
+                             double domainMin, double domainMax, BaseFunction* fcn );
 
+    void cuPSOupdateParticles( PSOcudaParticlesInfo& hostParticlesInfo,
+                               PSOcudaParticlesInfo& devParticlesInfo );
+
+    void cuPSOreleaseParticles( PSOcudaParticlesInfo& devParticlesInfo );
 }

@@ -11,6 +11,7 @@ namespace optimization
 
 	struct BaseFunction
 	{
+        double eval( double* vec, int dim );
         virtual double eval( const Vec& vec ) = 0;
 	};
 

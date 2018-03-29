@@ -6,7 +6,15 @@ using namespace std;
 
 namespace optimization
 {
+    double BaseFunction::eval( double* vec, int dim )
+    {
+        Vec _v( dim );
+        double* _vBuff = _v.buff();
 
+        memcpy( _vBuff, vec, sizeof( double ) * dim );
+
+        return this->eval( _v );
+    }
 
     double FunctionSphere::eval( const Vec& vec )
     {

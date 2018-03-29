@@ -20,7 +20,19 @@ namespace optimization
 
         // Initialize host and device info
 
-        
+        // Host
+        m_particlesHostInfo.ndim        = pNdim;
+        m_particlesHostInfo.population  = pPopulationSize;
+        m_particlesHostInfo.pos         = new double[ pNdim * pPopulationSize ];
+        m_particlesHostInfo.vel         = new double[ pNdim * pPopulationSize ];
+        m_particlesHostInfo.bpos        = new double[ pNdim * pPopulationSize ];
+        m_particlesHostInfo.cost        = new double[ pPopulationSize ];
+        m_particlesHostInfo.bcost       = new double[ pPopulationSize ];
+
+        // Device
+        m_particlesDeviceInfo.ndim          = pNdim;
+        m_particlesDeviceInfo.population    = pPopulationSize;
+        cuPSOcreateParticles( m_particlesDeviceInfo );
 
         m_bestPos = Vec( pNdim );
         m_bestCost = 0.0;
@@ -38,7 +50,13 @@ namespace optimization
 
     OptimizerPSOcuda::~OptimizerPSOcuda()
     {
-        
+        delete[] m_particlesHostInfo.pos;
+        delete[] m_particlesHostInfo.vel;
+        delete[] m_particlesHostInfo.bpos;
+        delete[] m_particlesHostInfo.cost;
+        delete[] m_particlesHostInfo.bcost;
+
+        cuPSOreleaseParticles( m_particlesDeviceInfo );
     }
 
     void OptimizerPSOcuda::start()
@@ -46,25 +64,10 @@ namespace optimization
         OptimizerInterface::start();
 
         // Initialize population
-        m_bestParticle.cost = m_isMinimization ? 1000000.0 : -1000000.0;
+        m_bestCost = m_isMinimization ? 1000000.0 : -1000000.0;
 
-        cout << "particles positions" << endl;
-
-        for ( int q = 0; q < m_particles.size(); q++ )
-        {
-            m_particles[q].vel  = Vec::zeros( m_ndim );
-            m_particles[q].pos  = Vec::randUniform( m_ndim, m_domainMin, m_domainMax );
-            m_particles[q].cost = m_objFcn->eval( m_particles[q].pos );
-
-            m_particles[q].bestPos  = m_particles[q].pos;
-            m_particles[q].bestCost = m_particles[q].cost;
-
-            if ( _isBetter( m_particles[q].cost, m_bestParticle.cost ) )
-            {
-                m_bestParticle.cost = m_particles[q].cost;
-                m_bestParticle.pos  = m_particles[q].pos;
-            }
-        }
+        cuPSOinitParticles( m_particlesHostInfo,
+                            m_particlesDeviceInfo );
 
         cout << "Finished initializing PSO ptimizer" << endl;
     }
@@ -73,8 +76,7 @@ namespace optimization
     {
         OptimizerInterface::step();
 
-
-
+        cuPSOupdateParticles( m_particlesHostInfo, m_particlesDeviceInfo );
 
         cout << "iteration " << m_currentIter << "**********" << endl;
 
@@ -94,21 +96,6 @@ namespace optimization
     {
         // Do nothing for now
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }
