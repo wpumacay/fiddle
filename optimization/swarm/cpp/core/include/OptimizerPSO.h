@@ -1,6 +1,7 @@
 
-#include <OptimizerInterface.h>
+#pragma once
 
+#include <OptimizerInterface.h>
 
 using namespace std;
 
@@ -15,7 +16,13 @@ namespace optimization
         double cost;
 
         Vec bestPos;
-        Vec bestCost;
+        double bestCost;
+
+        PSOparticle()
+        {
+            this->cost = 0.0;
+            this->bestCost = 0.0;
+        }
 
         PSOparticle( int ndim )
         {
@@ -40,15 +47,23 @@ namespace optimization
         vector< PSOparticle > m_particles;
         PSOparticle m_bestParticle;
 
+        Vec m_avgPosition;
+
         double m_w;
         double m_c1;
         double m_c2;
         double m_k;
 
+        double m_vmin;
+        double m_vmax;
+
         public :
 
         OptimizerPSO( int pNdim, 
-                      double pDomainMin, double pDomainMax, int pMaxIter, 
+                      double pDomainMin, 
+                      double pDomainMax, 
+                      int pMaxIter, 
+                      int pPopulationSize,
                       double w, double c1, double c2, double k );
         ~OptimizerPSO();
 
@@ -58,8 +73,9 @@ namespace optimization
 
         // Accessors
 
-        vector< PSOparticle >& particles() { return m_particles; }
-
+        vector< PSOparticle > particles() { return m_particles; }
+        PSOparticle bestParticle() { return m_bestParticle; }
+        Vec avgPosition() { return m_avgPosition; }
     };
 
 

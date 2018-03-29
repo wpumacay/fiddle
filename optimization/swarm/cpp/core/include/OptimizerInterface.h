@@ -1,10 +1,10 @@
 
+#pragma once
+
 #include <Common.h>
 #include <BenchmarkFunctions.h>
 
 using namespace std;
-
-
 
 
 namespace optimization

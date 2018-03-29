@@ -32,6 +32,12 @@ namespace optimization
         m_isMinimization = pIsMinimization;
     }
 
+    bool OptimizerInterface::_isBetter( double newVal, double oldVal )
+    {
+        if ( m_isMinimization ) { return oldVal > newVal; }
+        else { return oldVal < newVal; }
+    }
+
     void OptimizerInterface::start()
     {
         m_currentIter = 0;
@@ -39,7 +45,7 @@ namespace optimization
 
     void OptimizerInterface::step()
     {
-        // Override this
+        m_currentIter++;
     }
 
     void OptimizerInterface::end()
@@ -86,7 +92,7 @@ namespace optimization
 
         _optimizer->end();
 
-        m_isWorking = false;
+        _optimizer->m_isWorking = false;
     }
 
 }
