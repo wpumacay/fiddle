@@ -20,7 +20,64 @@ __device__ double DF_FunctionSphere( double* d_ppos, int ndim, int pIndx )
     return _res;
 }
 
+__device__ double DF_FunctionAckley( double* d_ppos, int ndim, int pIndx )
+{
+    // a = 20, b = 0.2, c = 2.0 * pi
 
+    double _sumsquares = 0.0;
+    for ( int d = 0; d < ndim; d++ )
+    {
+        double _xd = d_ppos[ pIndx * ndim + d ];
+
+        _sumsquares += _xd * _xd;
+    }
+    double _t1 = -20.0 * exp( -0.2 * sqrt( _sumsquares / ndim ) );
+
+    double _sumcos = 0.0;
+    for ( int d = 0; d < ndim; d++ )
+    {
+        _sumcos += cos( 2.0 * 3.141592653589793 * d_ppos[ pIndx * ndim + d ] );
+    }
+    double _t2 = -exp( _sumcos / ndim );
+    double _t3 = 20.0 + 2.718281828459045;
+
+    return _t1 + _t2 + _t3;
+}
+
+__device__ double DF_FunctionSchwefel( double* d_ppos, int ndim, int pIndx )
+{
+    double _res = 418.9829 * ndim;
+
+    for ( int d = 0; d < ndim; d++ )
+    {
+        double _xd = d_ppos[ pIndx * ndim + d ];
+
+        _res -= _xd * sin( sqrt( fabs( _xd ) ) );
+    }
+
+    return _res;
+}
+
+__device__ double DF_FunctionSchafferFcn6( double* d_ppos, int ndim, int pIndx )
+{
+    // a = 20, b = 0.2, c = 2.0 * pi
+
+    double _sumsquares = 0.0;
+    for ( int d = 0; d < ndim; d++ )
+    {
+        double _xd = d_ppos[ pIndx * ndim + d ];
+
+        _sumsquares += _xd * _xd;
+    }
+
+    double _tmp1 = sin( sqrt( _sumsquares ) );
+    double _numerator = _tmp1 * _tmp1 - 0.5;
+
+    double _tmp2 = 1.0 + 0.001 * _sumsquares;
+    double _denominator = _tmp2 * _tmp2;
+
+    return 0.5 - _numerator / _denominator;
+}
 
 __global__ void kernel_initializeRandomGenerator( unsigned int seed, int populationSize, curandState_t* states )
 {
@@ -93,7 +150,10 @@ __global__ void kernel_updateParticles( double* d_ppos, double* d_pvel, double* 
 
     // Update cost of the particle ***********************************
 
-    d_pcost[ p ] = DF_FunctionSphere( d_ppos, ndim, p );
+    // d_pcost[ p ] = DF_FunctionSphere( d_ppos, ndim, p );
+    // d_pcost[ p ] = DF_FunctionAckley( d_ppos, ndim, p );
+    d_pcost[ p ] = DF_FunctionSchwefel( d_ppos, ndim, p );
+    // d_pcost[ p ] = DF_FunctionSchafferFcn6( d_ppos, ndim, p );
 
     if ( d_pcost[ p ] < d_pbcost[ p ] )
     {
@@ -116,29 +176,29 @@ namespace optimization
 
     void cuPSOcreateParticles( PSOcudaParticlesInfo& devParticlesInfo )
     {
-        cudaError_t _errorCode;
+        // cudaError_t _errorCode;
 
-        _errorCode = cudaMalloc( ( void** ) &devParticlesInfo.pos, devParticlesInfo.vecBufferSize );
-        cout << "errCode - pos: " << _errorCode << endl;
+        /*_errorCode = */cudaMalloc( ( void** ) &devParticlesInfo.pos, devParticlesInfo.vecBufferSize );
+        // cout << "errCode - pos: " << _errorCode << endl;
 
-        _errorCode = cudaMalloc( ( void** ) &devParticlesInfo.vel, devParticlesInfo.vecBufferSize );
-        cout << "errCode - vel: " << _errorCode << endl;        
+        /*_errorCode = */cudaMalloc( ( void** ) &devParticlesInfo.vel, devParticlesInfo.vecBufferSize );
+        // cout << "errCode - vel: " << _errorCode << endl;        
 
-        _errorCode = cudaMalloc( ( void** ) &devParticlesInfo.bpos, devParticlesInfo.vecBufferSize );
-        cout << "errCode - bpos: " << _errorCode << endl;        
+        /*_errorCode = */cudaMalloc( ( void** ) &devParticlesInfo.bpos, devParticlesInfo.vecBufferSize );
+        // cout << "errCode - bpos: " << _errorCode << endl;        
 
-        _errorCode = cudaMalloc( ( void** ) &devParticlesInfo.cost, devParticlesInfo.costBufferSize );
-        cout << "errCode - cost: " << _errorCode << endl;        
+        /*_errorCode = */cudaMalloc( ( void** ) &devParticlesInfo.cost, devParticlesInfo.costBufferSize );
+        // cout << "errCode - cost: " << _errorCode << endl;        
 
-        _errorCode = cudaMalloc( ( void** ) &devParticlesInfo.bcost, devParticlesInfo.costBufferSize );
-        cout << "errCode - bcost: " << _errorCode << endl;        
+        /*_errorCode = */cudaMalloc( ( void** ) &devParticlesInfo.bcost, devParticlesInfo.costBufferSize );
+        // cout << "errCode - bcost: " << _errorCode << endl;        
 
-        _errorCode = cudaMalloc( ( void** ) &devParticlesInfo.gbestpos, devParticlesInfo.vecSize );
-        cout << "errCode - gbestpos: " << _errorCode << endl;        
+        /*_errorCode = */cudaMalloc( ( void** ) &devParticlesInfo.gbestpos, devParticlesInfo.vecSize );
+        // cout << "errCode - gbestpos: " << _errorCode << endl;        
 
         // Initialize random number generator as well
-        _errorCode = cudaMalloc( ( void** ) &devParticlesInfo.devRandStates, sizeof( curandState_t ) * devParticlesInfo.population );
-        cout << "errCode - devRandStates: " << _errorCode << endl;        
+        /*_errorCode = */cudaMalloc( ( void** ) &devParticlesInfo.devRandStates, sizeof( curandState_t ) * devParticlesInfo.population );
+        // cout << "errCode - devRandStates: " << _errorCode << endl;        
 
         int _bx = ceil( ( ( float ) devParticlesInfo.population ) / MAX_THREADS_PER_BLOCK );
 
@@ -181,27 +241,27 @@ namespace optimization
         // Pass this info to the device particles
         devParticlesInfo.gbestcost = 1000000.0;
 
-        cudaError_t _errorCode;
+        // cudaError_t _errorCode;
 
-        _errorCode = cudaMemcpy( devParticlesInfo.pos, hostParticlesInfo.pos, 
+        /*_errorCode = */cudaMemcpy( devParticlesInfo.pos, hostParticlesInfo.pos, 
                                  hostParticlesInfo.vecBufferSize, cudaMemcpyHostToDevice );
-        cout << "errCode pos: " << _errorCode << endl;        
+        // cout << "errCode pos: " << _errorCode << endl;        
 
-        _errorCode = cudaMemcpy( devParticlesInfo.vel, hostParticlesInfo.vel, 
+        /*_errorCode = */cudaMemcpy( devParticlesInfo.vel, hostParticlesInfo.vel, 
                                  hostParticlesInfo.vecBufferSize, cudaMemcpyHostToDevice );
-        cout << "errCode vel: " << _errorCode << endl;        
+        // cout << "errCode vel: " << _errorCode << endl;        
 
-        _errorCode = cudaMemcpy( devParticlesInfo.bpos, hostParticlesInfo.bpos, 
+        /*_errorCode = */cudaMemcpy( devParticlesInfo.bpos, hostParticlesInfo.bpos, 
                                  hostParticlesInfo.vecBufferSize, cudaMemcpyHostToDevice );
-        cout << "errCode bpos: " << _errorCode << endl;        
+        // cout << "errCode bpos: " << _errorCode << endl;        
 
-        _errorCode = cudaMemcpy( devParticlesInfo.cost, hostParticlesInfo.cost, 
+        /*_errorCode = */cudaMemcpy( devParticlesInfo.cost, hostParticlesInfo.cost, 
                                  hostParticlesInfo.costBufferSize, cudaMemcpyHostToDevice );
-        cout << "errCode cost: " << _errorCode << endl;        
+        // cout << "errCode cost: " << _errorCode << endl;        
 
-        _errorCode = cudaMemcpy( devParticlesInfo.bcost, hostParticlesInfo.bcost, 
+        /*_errorCode = */cudaMemcpy( devParticlesInfo.bcost, hostParticlesInfo.bcost, 
                                  hostParticlesInfo.costBufferSize, cudaMemcpyHostToDevice );
-        cout << "errCode bcost: " << _errorCode << endl;        
+        // cout << "errCode bcost: " << _errorCode << endl;        
     }
 
     void cuPSOupdateParticles( PSOcudaParticlesInfo& hostParticlesInfo,
@@ -209,11 +269,11 @@ namespace optimization
                                double w, double c1, double c2, double k )
     {
         // Copy from host to device - only best cost and best pos
-        cudaError_t _errorCode;
+        // cudaError_t _errorCode;
 
-        _errorCode = cudaMemcpy( devParticlesInfo.gbestpos, hostParticlesInfo.gbestpos, 
+        /*_errorCode = */cudaMemcpy( devParticlesInfo.gbestpos, hostParticlesInfo.gbestpos, 
                                  hostParticlesInfo.vecSize, cudaMemcpyHostToDevice );
-        cout << "errCode gbestpos: " << _errorCode << endl;       
+        // cout << "errCode gbestpos: " << _errorCode << endl;       
 
         devParticlesInfo.gbestcost = hostParticlesInfo.gbestcost;// this one is just a copy in host
 
@@ -238,25 +298,25 @@ namespace optimization
 
         // Copy back from device to host ***************************************
 
-        _errorCode = cudaMemcpy( hostParticlesInfo.pos, devParticlesInfo.pos, 
+        /*_errorCode = */cudaMemcpy( hostParticlesInfo.pos, devParticlesInfo.pos, 
                                  hostParticlesInfo.vecBufferSize, cudaMemcpyDeviceToHost );
-        cout << "errCode--pos: " << _errorCode << endl;        
+        // cout << "errCode--pos: " << _errorCode << endl;        
 
-        _errorCode = cudaMemcpy( hostParticlesInfo.vel, devParticlesInfo.vel, 
+        /*_errorCode = */cudaMemcpy( hostParticlesInfo.vel, devParticlesInfo.vel, 
                                  hostParticlesInfo.vecBufferSize, cudaMemcpyDeviceToHost );
-        cout << "errCode--vel: " << _errorCode << endl;        
+        // cout << "errCode--vel: " << _errorCode << endl;        
 
-        _errorCode = cudaMemcpy( hostParticlesInfo.bpos, devParticlesInfo.bpos, 
+        /*_errorCode = */cudaMemcpy( hostParticlesInfo.bpos, devParticlesInfo.bpos, 
                                  hostParticlesInfo.vecBufferSize, cudaMemcpyDeviceToHost );
-        cout << "errCode--bpos: " << _errorCode << endl;        
+        // cout << "errCode--bpos: " << _errorCode << endl;        
 
-        _errorCode = cudaMemcpy( hostParticlesInfo.cost, devParticlesInfo.cost, 
+        /*_errorCode = */cudaMemcpy( hostParticlesInfo.cost, devParticlesInfo.cost, 
                                  hostParticlesInfo.costBufferSize, cudaMemcpyDeviceToHost );
-        cout << "errCode--cost: " << _errorCode << endl;        
+        // cout << "errCode--cost: " << _errorCode << endl;        
 
-        _errorCode = cudaMemcpy( hostParticlesInfo.bcost, devParticlesInfo.bcost, 
+        /*_errorCode = */cudaMemcpy( hostParticlesInfo.bcost, devParticlesInfo.bcost, 
                                  hostParticlesInfo.costBufferSize, cudaMemcpyDeviceToHost );
-        cout << "errCode--bcost: " << _errorCode << endl;       
+        // cout << "errCode--bcost: " << _errorCode << endl;       
 
         // *********************************************************************
 
