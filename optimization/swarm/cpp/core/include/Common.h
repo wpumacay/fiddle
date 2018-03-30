@@ -2,6 +2,7 @@
 #pragma once
 
 #include <cmath>
+#include <ctime>
 #include <cstring>
 #include <vector>
 #include <string>
@@ -49,6 +50,7 @@ namespace optimization
 
 		double operator[] ( int indx ) const;
 		double get( int indx ) const;
+		void set( int indx, double val );
 		string toString();
 
 		static double dot( const Vec& v1, const Vec& v2 );

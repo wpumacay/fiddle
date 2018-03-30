@@ -73,6 +73,13 @@ namespace optimization
         return m_buff[ indx ];
     }
 
+    void Vec::set( int indx, double val )
+    {
+        assert( indx >= 0 && indx < m_ndim );
+
+        m_buff[ indx ] = val;
+    }
+
     string Vec::toString()
     {
         string _res = "[ ";

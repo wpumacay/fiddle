@@ -17,6 +17,7 @@ namespace optimization
         int ndim;
         int population;
 
+        int vecSize;
         int vecBufferSize;
         int costBufferSize;
 
@@ -27,16 +28,32 @@ namespace optimization
         // Arrays of size "population"
         double* cost;
         double* bcost;
+        // Global best pos
+        double* gbestpos;
+        
+        // Global best cost
+        double gbestcost;
+
+        // cuda random states handler
+        curandState_t* devRandStates;
+
+        // space constraints
+        double domainMin;
+        double domainMax;
+        // velocity constraints
+        double vmin;
+        double vmax;
     };
 
     void cuPSOcreateParticles( PSOcudaParticlesInfo& devParticlesInfo );
 
     void cuPSOinitParticles( PSOcudaParticlesInfo& hostParticlesInfo,
-                             PSOcudaParticlesInfo& devParticlesInfo,
-                             double domainMin, double domainMax, BaseFunction* fcn );
+                             PSOcudaParticlesInfo& devParticlesInfo, 
+                             BaseFunction* fcn );
 
     void cuPSOupdateParticles( PSOcudaParticlesInfo& hostParticlesInfo,
-                               PSOcudaParticlesInfo& devParticlesInfo );
+                               PSOcudaParticlesInfo& devParticlesInfo,
+                               double w, double c1, double c2, double k );
 
     void cuPSOreleaseParticles( PSOcudaParticlesInfo& devParticlesInfo );
 }

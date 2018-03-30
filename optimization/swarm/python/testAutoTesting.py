@@ -10,8 +10,8 @@ plt.ion()
 
 # _bmFunction, _optimizer, _cfgFcn, _cfgOpt = config.InitializeProblem( 'Sphere', 'PSO', 2 )
 # _bmFunction, _optimizer, _cfgFcn, _cfgOpt = config.InitializeProblem( 'Ackley', 'PSO', 8 )
-# _bmFunction, _optimizer, _cfgFcn, _cfgOpt = config.InitializeProblem( 'Schwefel', 'PSO', 8 )
-_bmFunction, _optimizer, _cfgFcn, _cfgOpt = config.InitializeProblem( 'ShafferFcn6', 'PSO', 8 )
+# _bmFunction, _optimizer, _cfgFcn, _cfgOpt = config.InitializeProblem( 'Schwefel', 'PSO', 2 )
+_bmFunction, _optimizer, _cfgFcn, _cfgOpt = config.InitializeProblem( 'ShafferFcn6', 'PSO', 2 )
 
 _optimizer._start()
 

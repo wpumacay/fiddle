@@ -9,7 +9,7 @@ using namespace std;
 namespace optimization
 {
 
-    class OptimizerPSOCuda : public OptimizerInterface
+    class OptimizerPSOcuda : public OptimizerInterface
     {
 
         private :
@@ -34,13 +34,13 @@ namespace optimization
 
         public :
 
-        OptimizerPSO( int pNdim, 
-                      double pDomainMin, 
-                      double pDomainMax, 
-                      int pMaxIter, 
-                      int pPopulationSize,
-                      double w, double c1, double c2, double k );
-        ~OptimizerPSO();
+        OptimizerPSOcuda( int pNdim, 
+                          double pDomainMin, 
+                          double pDomainMax, 
+                          int pMaxIter, 
+                          int pPopulationSize,
+                          double w, double c1, double c2, double k );
+        ~OptimizerPSOcuda();
 
         void start() override;
         void step() override;
