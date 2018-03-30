@@ -49,11 +49,12 @@ namespace optimization
 
     void cuPSOinitParticles( PSOcudaParticlesInfo& hostParticlesInfo,
                              PSOcudaParticlesInfo& devParticlesInfo, 
-                             BaseFunction* fcn );
+                             BaseFunction* fcn, bool isMinimization );
 
     void cuPSOupdateParticles( PSOcudaParticlesInfo& hostParticlesInfo,
                                PSOcudaParticlesInfo& devParticlesInfo,
-                               double w, double c1, double c2, double k );
+                               double w, double c1, double c2, double k,
+                               int fcnObjId, bool isMinimization );
 
     void cuPSOreleaseParticles( PSOcudaParticlesInfo& devParticlesInfo );
 }

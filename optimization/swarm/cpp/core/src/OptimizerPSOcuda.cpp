@@ -87,7 +87,7 @@ namespace optimization
 
         cuPSOinitParticles( m_particlesHostInfo,
                             m_particlesDeviceInfo,
-                            m_objFcn );
+                            m_objFcn, m_isMinimization );
 
         cout << "Finished initializing PSO ptimizer" << endl;
     }
@@ -97,7 +97,8 @@ namespace optimization
         OptimizerInterface::step();
 
         cuPSOupdateParticles( m_particlesHostInfo, m_particlesDeviceInfo,
-                              m_w, m_c1, m_c2, m_k );
+                              m_w, m_c1, m_c2, m_k, 
+                              m_objFcn->id, m_isMinimization );
 
         for ( int d = 0; d < m_ndim; d++ )
         {

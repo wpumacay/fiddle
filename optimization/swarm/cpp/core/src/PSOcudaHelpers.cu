@@ -100,6 +100,7 @@ __global__ void kernel_updateParticles( double* d_ppos, double* d_pvel, double* 
                                         double domainMin, double domainMax,
                                         double vmin, double vmax,
                                         double w, double c1, double c2, double k,
+                                        int fcnObjId, bool isMinimization,
                                         curandState_t* randomStates )
 {
 
@@ -150,12 +151,25 @@ __global__ void kernel_updateParticles( double* d_ppos, double* d_pvel, double* 
 
     // Update cost of the particle ***********************************
 
-    // d_pcost[ p ] = DF_FunctionSphere( d_ppos, ndim, p );
-    // d_pcost[ p ] = DF_FunctionAckley( d_ppos, ndim, p );
-    d_pcost[ p ] = DF_FunctionSchwefel( d_ppos, ndim, p );
-    // d_pcost[ p ] = DF_FunctionSchafferFcn6( d_ppos, ndim, p );
+    if ( fcnObjId == OPT_FUNCTION_SPHERE )
+    {
+        d_pcost[ p ] = DF_FunctionSphere( d_ppos, ndim, p );
+    }
+    else if ( fcnObjId == OPT_FUNCTION_ACKLEY )
+    {
+        d_pcost[ p ] = DF_FunctionAckley( d_ppos, ndim, p );
+    }
+    else if ( fcnObjId == OPT_FUNCTION_SCHWEFEL )
+    {
+        d_pcost[ p ] = DF_FunctionSchwefel( d_ppos, ndim, p );
+    }
+    else if ( fcnObjId == OPT_FUNCTION_SCHAFFER6 )
+    {
+        d_pcost[ p ] = DF_FunctionSchafferFcn6( d_ppos, ndim, p );
+    }
 
-    if ( d_pcost[ p ] < d_pbcost[ p ] )
+    if ( ( isMinimization && ( d_pcost[ p ] < d_pbcost[ p ] ) ) ||
+         ( !isMinimization && ( d_pcost[ p ] > d_pbcost[ p ] ) ) )
     {
         d_pbcost[ p ] = d_pcost[ p ];
         for ( int d = 0; d < ndim; d++ ) 
@@ -210,10 +224,10 @@ namespace optimization
 
     void cuPSOinitParticles( PSOcudaParticlesInfo& hostParticlesInfo,
                              PSOcudaParticlesInfo& devParticlesInfo, 
-                             BaseFunction* fcn )
+                             BaseFunction* fcn, bool isMinimization )
     {
 
-        hostParticlesInfo.gbestcost = 1000000.0;
+        hostParticlesInfo.gbestcost = ( isMinimization ) ? 1000000.0 : -1000000.0;
 
         // Initialize host particles to be sent to device
         for ( int p = 0; p < hostParticlesInfo.population; p++ )
@@ -228,7 +242,8 @@ namespace optimization
             hostParticlesInfo.cost[ p ]  = fcn->eval( hostParticlesInfo.pos + p * hostParticlesInfo.ndim, hostParticlesInfo.ndim );
             hostParticlesInfo.bcost[ p ] = hostParticlesInfo.cost[ p ];
 
-            if ( hostParticlesInfo.cost[ p ] < hostParticlesInfo.gbestcost )
+            if ( ( isMinimization && ( hostParticlesInfo.cost[ p ] < hostParticlesInfo.gbestcost ) ) ||
+                 ( !isMinimization && ( hostParticlesInfo.cost[ p ] > hostParticlesInfo.gbestcost ) ) )
             {
                 hostParticlesInfo.gbestcost = hostParticlesInfo.cost[ p ];
                 for ( int d = 0; d < hostParticlesInfo.ndim; d++ )
@@ -239,7 +254,7 @@ namespace optimization
         }
 
         // Pass this info to the device particles
-        devParticlesInfo.gbestcost = 1000000.0;
+        devParticlesInfo.gbestcost = ( isMinimization ) ? 1000000.0 : -1000000.0;
 
         // cudaError_t _errorCode;
 
@@ -266,7 +281,8 @@ namespace optimization
 
     void cuPSOupdateParticles( PSOcudaParticlesInfo& hostParticlesInfo,
                                PSOcudaParticlesInfo& devParticlesInfo,
-                               double w, double c1, double c2, double k )
+                               double w, double c1, double c2, double k,
+                               int fcnObjId, bool isMinimization )
     {
         // Copy from host to device - only best cost and best pos
         // cudaError_t _errorCode;
@@ -291,6 +307,7 @@ namespace optimization
                                                              devParticlesInfo.domainMin, devParticlesInfo.domainMax,
                                                              devParticlesInfo.vmin, devParticlesInfo.vmax,
                                                              w, c1, c2, k,
+                                                             fcnObjId, isMinimization,
                                                              devParticlesInfo.devRandStates );
 
         // *********************************************************************
@@ -326,7 +343,8 @@ namespace optimization
 
         for ( int p = 0; p < hostParticlesInfo.population; p++ )
         {
-            if ( hostParticlesInfo.bcost[ p ] < hostParticlesInfo.gbestcost )
+            if ( ( isMinimization && ( hostParticlesInfo.bcost[ p ] < hostParticlesInfo.gbestcost ) ) ||
+                 ( !isMinimization && ( hostParticlesInfo.bcost[ p ] > hostParticlesInfo.gbestcost ) ) )
             {
                 hostParticlesInfo.gbestcost = hostParticlesInfo.bcost[ p ];
                 _bestParticleIndx = p;
