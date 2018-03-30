@@ -1,0 +1,99 @@
+\documentclass[journal]{IEEEtran}
+
+\usepackage{cite}
+\usepackage{amsmath}
+\interdisplaylinepenalty=2500
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{float}
+
+% correct bad hyphenation here
+\hyphenation{}
+
+
+\begin{document}
+\title{Particle Swarm Optimization}
+
+\author{Wilbert~Pumacay,~\textit{Catholic University San Pablo},~wilbert.pumacay@ucsp.edu.pe\\
+        Gerson~Vizcarra,~\textit{Catholic University San Pablo},~gerson.vizcarra@ucsp.edu.pe}
+
+% make the title area
+\maketitle
+
+\begin{abstract}
+Heuristics-based swarm algorithms emerged as a powerful family of optimization techniques, inspired by the collective behavior of social animals. Particle Swarm Optimization (PSO) , part of this family, is known to solve large-scale nonlinear optimization problems using particles as set of candidate solutions. In this paper we test the potential of PSO on 4 benchmarks: Sphere, Ackley, Schwefel and ShafferFcn6; also we implemented a parallel version of the algorithm in CUDA to speed up the optimization process.
+\\
+Results show that Particle Swarm Optimization is a great algorithm to find gobal minima/maxima but, its performance is deteriorated when the dimensionality of search space increases.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Particle Swarm Optimization, Convergence Behavior, Parallel Paradigm
+\end{IEEEkeywords}
+
+
+\section{Introduction}
+
+\IEEEPARstart{T}{he}
+
+
+\section{ Particle Swarm Optimization (PSO) }
+\subsection{Basic concepts}
+Particle Swarm Optimization, first introduced by Kennedy and Eberhart \cite{Kennedy1995} is a stochastic optimization technique htat is based on two fundamental diciplines·\cite{delValle2008}: social science and computer science. In addition, PSO uses the swarm intelligence concept: the collective behavior of unsophisticated agents that are interacting locally with their environment create coherent global functional patterns.
+
+\subsubsection{ Social concepts }
+Human intelligence resulting of social interaction consist in evaluate, compare and imitate to others, as well to learn of experience allow to humans to adapt to the environment and find optimal patterns of behavior
+
+\subsubsection{ Swarm intelligence }
+Swarm intelligence can be described by considering principles, this principles are based on biological agents; according to \cite{Garnier2007} there are four main principles.
+\begin{enumerate}
+    \item Coordination: Information is shared among the agents.
+    \item Collaboration: Agents can do different tasks in parallel.
+    \item Deliberation: Agents can determine priorities if they have more than one option.
+    \item Cooperation: Agents combine their efforts to successfully solve a problem.
+\end{enumerate}
+\subsubsection{ Computational Characteristics }
+
+
+
+\subsection{PSO in Real Number Space}
+
+
+\subsection{implementation details} % maybe
+
+\section{Results}
+
+
+\section{Conclusions and Future improvements}
+
+
+\IEEEtriggeratref{8}
+
+% references section
+\begin{thebibliography}{1}
+
+\bibitem{Kennedy1995}
+  James Kennedy and Russell Eberhart. \\
+  \textit{Particle Swarm Optimization.} - 1995
+\\
+\bibitem{Garnier2007}
+  Simon Garnier, Jacques Gautrais, Guy Theraulaz\\
+  \textit{The biological principles of swarm intelligence.} - 2007
+\\
+\bibitem{delValle2008}
+  Yamille del Valle, Ganesh Kumar, Salman Mohagheghi, Jean Hernandez, Ronald Harley\\
+  \textit{Particle Swarm Optimization: Basic Concepts, Variants and Applications in Power Systems.} - 2008
+\\
+\bibitem{CameraCalibration1}
+  Zhengyou Zhang \\
+  \textit{A Flexible New Technique for Camera Calibration.} - 2000
+\\
+\bibitem{IntegralImageThresholding}
+  Derek Bradley, Gerhard Roth \\
+  \textit{Adaptive Thresholding Using the Integral Image.} - 2011
+
+\end{thebibliography}
+
+
+\end{document}
