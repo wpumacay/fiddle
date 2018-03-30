@@ -5,7 +5,7 @@ using namespace std;
 
 int main()
 {
-    optimization::OptimizerPSOcuda _optimizer( 2, -100.0, 100.0, 1000, 200,
+    optimization::OptimizerPSOcuda _optimizer( 2, -100.0, 100.0, 100, 200,
                                                0.5, 2.0, 2.0, 0.5 );
 
     _optimizer.setObjectiveFunction( new optimization::FunctionSphere(), true );
@@ -27,10 +27,10 @@ int main()
 
     _optimizer.start();
 
-    // while( !_optimizer.stopCondition() )
-    // {
+    while( !_optimizer.stopCondition() )
+    {
         _optimizer.step();
-    // }
+    }
 
     _optimizer.end();
 
