@@ -9,6 +9,7 @@
 \usepackage{graphicx}
 \usepackage{float}
 
+
 % correct bad hyphenation here
 \hyphenation{}
 
@@ -54,12 +55,53 @@ Swarm intelligence can be described by considering principles, this principles a
     \item Cooperation: Agents combine their efforts to successfully solve a problem.
 \end{enumerate}
 \subsubsection{ Computational Characteristics }
+Swarm intelligence provides a useful paradigm for implementing adaptative systems. In particular, PSO has particles that can be updated in parallel, their values depends of the previous value and the neighbors and all updates are performed using the same rules.
+\subsection{Description of the algorithm}
+PSO is a population based optimization technique, where the population is called a \textit{swarm}. An explanation of the operations performed is as follows. Earch particle represents a posible solution to the optimization task at hand, during each iteration each particle accelerates in the direction of its own personal best solution found so far, as well as the direction of the global best solution discovered so far by any of the particles in the swarm. This means if a particle found a promising new solution, the other particles will move closer to it, it helps to explore the region more deeply.
+\\
+\begin{equation} \label{eq:1}
+    \begin{aligned}
+    v_{i,j}(t+1)=wv_{i,j}(t)+c_1r_{1,i}(t)[y_{i,j}(t)-x_{i,j}(t)]+\\c_2r_{2,i}(t)[\hat{^y}_j(t)-x_{i,j}(t)]
+    \end{aligned}
+\end{equation}
 
+Let $s$ detote the swarm size, Each individual $1 \leq i \leq s$ has the following attributes. A current position in search space $x_i$, a current velocity $v_i$, and a personal best position in the search space $y_i$. During each iteration, each particle in the swarm is updated using (\ref{eq:1}) and (\ref{eq:2}). In (\ref{eq:1}) for all $j\in1...n$, $v_{i,j}$ is the velocity of the $j$th dimension of the $i$th particle, and $c_1$ and $c_2$ denote the \textit{acceleration coefficients}. The new position of a particle is a calculated using
 
+\begin{equation} \label{eq:2}
+    \begin{aligned}
+        x_i(t+1)=x_i(t)+v_i(t+1).
+    \end{aligned}
+\end{equation}
+
+The personal best position of each particle is updated using
+\begin{equation} \label{eq:3}
+y_i(t+1) = \left\{
+  \begin{aligned}
+    &y_i(t), \text{if } f(x_i(t+1))\geq f(y_i(t)) \\
+    &x_i(t+1), \text{if } f(x_i(t+1))<f(y_i(t))
+  \end{aligned}
+\right\}
+\end{equation}
+and the global best solution found by any particle during all previous steps, $\hat{^y}$, is defined as
+\begin{equation} \label{eq:4}
+    \begin{aligned}
+        \hat{^y}(t+1)=arg f(y_i(t+1)), 1\leq i \leq s
+    \end{aligned}
+\end{equation}
+The value of each component in every $v_i$ vector can be clamped to the range [$-v_{max},v_{max}$] to reduce the likelihood of particles leaving the search space, another option is to change the direction of the velocity before it leaves the search space. The acceleration coefficients $c_1$ and $c_2$ control how far the particle will move in a single iteration, tipically these are bot setted to a value of 2.0, although variations sometimes increases the performance of the algorithm.
 
 \subsection{PSO in Real Number Space}
+In real number space we use the formulation of above and the following procedure.
+\begin{enumerate}
+    \item Initialize the swarm by assigning a random position in the problem hyperspace to each particle.
+    \item Evaluate the fitness function of each particle.
+    \item For each particle, compare the particle's fitness value with its $p_{best}$. If the current value is better than the $p_{best}$ value, is setted as $p_{best}$.
+    \item Identify the particle with best fitness value and set it to global best.
+    \item Update the velocities and the positions of each particle using (\ref{eq:1}) and (\ref{eq:2}).
+    \item Repeat steps 2-5 until stopping criterion (e.g. maximum number of iterations or a suffiently good fitness value).
+\end{enumerate}
 
-
+Initialize the particles in a way that they are distributed as more as posible increases the posibility of getting better results because ensures more coverage of the search space.
 \subsection{implementation details} % maybe
 
 \section{Results}
