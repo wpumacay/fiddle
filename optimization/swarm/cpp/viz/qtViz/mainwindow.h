@@ -6,38 +6,72 @@
 #include <QTimer>
 
 // 3D plot visualizer
-#include <SurfaceHandler.h>
+#include <SurfaceViz.h>
 // optimizer functionality
+#include <OptimizerPSO.h>
 #include <OptimizerPSOcuda.h>
 
+using namespace std;
+
+#define NUM_PARTICLES 200000
 
 namespace Ui 
 {
     class MainWindow;
 }
 
-class MainWindow : public QMainWindow
+namespace viz
 {
-    Q_OBJECT
 
-    private:
+    class MainWindow : public QMainWindow
+    {
+        Q_OBJECT
 
-    Ui::MainWindow *ui;
+        private:
 
-    QTimer* m_timer;
+        Ui::MainWindow *m_ui;
 
-    optimization::SurfaceHandler* m_surfaceHandler;
-    optimization::OptimizerPSOcuda* m_optimizer;
+        QTimer* m_timer;
+        bool m_isRunning;
+        bool m_isUsingCuda;
 
-    void _setupObjectiveFcnById( const string& objFcnStrId );
+        optimization::OptimizerPSOcuda* m_optimizerGpu;
+        optimization::OptimizerPSO* m_optimizerCpu;
 
-    public Q_SLOTS:
+        optimization::OptimizerInterface* m_currentOptimizer;
 
-    void _onTimerTick();
-    
-    public:
+        QWidget* m_surfaceContainer;
+        viz::SurfaceViz* m_surfaceViz;
 
-    explicit MainWindow( QWidget* parent = NULL );
-    ~MainWindow();
-};
+        QWidget* m_plotConvergenceContainer;
+        // viz::PlotViz* m_plotConvergenceViz;
+
+        string m_fcnName;
+        int m_fcnDims;
+
+        void _setupObjectiveFcnById( const string& objFcnStrId );
+        void _switchOptimizer( bool useCuda );
+
+        public Q_SLOTS:
+
+        void _onTimerTick();
+
+        void _onOptimizerSwitched( bool val );
+        void _onFunctionDimensionsChanged( int val );
+        void _onFunctionNameChanged( int indx );
+
+        void _onSurfaceVizSwitched( bool val );
+        void _onPlotVizSwitched( bool val );
+
+        void _onTestRun();
+        void _onTestStop();
+        void _onTestReset();
+
+        public:
+
+        explicit MainWindow( QWidget* parent = NULL );
+        ~MainWindow();
+    };
+
+}
 

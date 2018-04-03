@@ -18,10 +18,10 @@
 using namespace std;
 using namespace QtDataVisualization;
 
-namespace optimization
+namespace viz
 {
 
-    class SurfaceHandler
+    class SurfaceViz
     {
         
         private:
@@ -35,7 +35,7 @@ namespace optimization
         float m_rangeMin;
         float m_rangeMax;
 
-        BaseFunction* m_objFcn;
+        optimization::BaseFunction* m_objFcn;
 
         vector< QCustom3DItem* > m_plotParticles;
         QCustom3DItem* m_bestParticle;
@@ -46,10 +46,10 @@ namespace optimization
 
         public :
 
-        SurfaceHandler( Q3DSurface *surface );
-        ~SurfaceHandler();
+        SurfaceViz( Q3DSurface *surface );
+        ~SurfaceViz();
 
-        void changeObjectiveFunction( BaseFunction* pNewObjFcn, 
+        void changeObjectiveFunction( optimization::BaseFunction* pNewObjFcn, 
                                       float pDomainMin, float pDomainMax,
                                       float pRangeMin, float pRangeMax );
         void changeRange( float pRangeMin, float pRangeMax );

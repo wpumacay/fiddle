@@ -77,7 +77,11 @@ namespace optimization
 
         vector< PSOparticle > particles() { return m_particles; }
         PSOparticle bestParticle() { return m_bestParticle; }
-        Vec avgPosition() { return m_avgPosition; }
+
+        Vec bestPos() override { return m_bestParticle.pos; } ;
+        double bestCost() override { return m_bestParticle.cost; };
+        Vec avgPosition() override { return m_avgPosition; }
+        vector< Vec > getParticlesPositions( int size ) override;
     };
 
 

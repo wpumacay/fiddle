@@ -49,11 +49,10 @@ namespace optimization
 
         // Accessors
 
-        Vec bestPos() { return m_bestPos; }
-        double bestCost() { return m_bestCost; }
-        Vec avgPosition() { return m_avgPosition; }
-
-        vector< Vec > getParticlesPositions( int size = 1000 );
+        Vec bestPos() override { return m_bestPos; }
+        double bestCost() override { return m_bestCost; }
+        Vec avgPosition() override { return m_avgPosition; }
+        vector< Vec > getParticlesPositions( int size ) override;
     };
 
 }

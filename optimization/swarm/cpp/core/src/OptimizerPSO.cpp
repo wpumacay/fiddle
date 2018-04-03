@@ -135,4 +135,21 @@ namespace optimization
         m_vmax = m_k * ( m_domainMax - m_domainMin ) / 2.0;
     }
 
+    vector< Vec > OptimizerPSO::getParticlesPositions( int size )
+    {
+        vector< Vec > _particles;
+
+        for ( int q = 0; q < m_particles.size(); q++ )
+        {
+            if ( q >= size )
+            {
+                break;
+            }
+            
+            _particles.push_back( m_particles[q].pos );
+        }
+
+        return _particles;
+    }
+
 }

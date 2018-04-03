@@ -25,11 +25,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        src/SurfaceHandler.cpp \
+        src/SurfaceViz.cpp \
         mainwindow.cpp
 
 HEADERS += \
-        include/SurfaceHandler.h \
+        include/SurfaceViz.h \
         mainwindow.h
 
 FORMS += \

@@ -71,6 +71,13 @@ namespace optimization
         bool isWorking() { return m_isWorking; }
         bool isMinimization() { return m_isMinimization; }
         int optState() { return m_optState; }
+
+        // Swarm stuff
+
+        virtual Vec bestPos() = 0;
+        virtual double bestCost() = 0;
+        virtual Vec avgPosition() = 0;
+        virtual vector< Vec > getParticlesPositions( int size ) = 0;
     };
 
 

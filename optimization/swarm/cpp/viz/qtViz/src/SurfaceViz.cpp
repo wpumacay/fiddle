@@ -1,6 +1,6 @@
 
 
-#include <SurfaceHandler.h>
+#include <SurfaceViz.h>
 
 #include <QtDataVisualization/QValue3DAxis>
 #include <QtDataVisualization/Q3DTheme>
@@ -15,10 +15,10 @@ using namespace QtDataVisualization;
 const int SAMPLE_COUNT_X = 100;
 const int SAMPLE_COUNT_Z = 100;
 
-namespace optimization
+namespace viz
 {
 
-    SurfaceHandler::SurfaceHandler( Q3DSurface *pSurface )
+    SurfaceViz::SurfaceViz( Q3DSurface *pSurface )
     {
         m_graph = pSurface;
 
@@ -81,14 +81,14 @@ namespace optimization
         // **************************************************************************
     }
 
-    SurfaceHandler::~SurfaceHandler()
+    SurfaceViz::~SurfaceViz()
     {
         delete m_graph;
     }
 
-    void SurfaceHandler::changeObjectiveFunction( BaseFunction* pObjFcn, 
-                                                  float pDomainMin, float pDomainMax,
-                                                  float pRangeMin, float pRangeMax )
+    void SurfaceViz::changeObjectiveFunction( optimization::BaseFunction* pObjFcn, 
+                                              float pDomainMin, float pDomainMax,
+                                              float pRangeMin, float pRangeMax )
     {
         m_objFcn = pObjFcn;
         changeDomain( pDomainMin, pDomainMax );
@@ -105,7 +105,7 @@ namespace optimization
         m_graph->addSeries( m_dataSeries );
     }
 
-    void SurfaceHandler::changeRange( float pRangeMin, float pRangeMax )
+    void SurfaceViz::changeRange( float pRangeMin, float pRangeMax )
     {
         m_rangeMin = pRangeMin;
         m_rangeMax = pRangeMax;
@@ -114,7 +114,7 @@ namespace optimization
         cout << "new range> min: " << m_rangeMin << " max: " << m_rangeMax << endl;
     }
 
-    void SurfaceHandler::changeDomain( float pDomainMin, float pDomainMax )
+    void SurfaceViz::changeDomain( float pDomainMin, float pDomainMax )
     {
         m_domainMin = pDomainMin;
         m_domainMax = pDomainMax;
@@ -124,7 +124,7 @@ namespace optimization
         cout << "new domain> min: " << m_domainMin << " max: " << m_domainMax << endl;
     }
 
-    void SurfaceHandler::_computeSurface()
+    void SurfaceViz::_computeSurface()
     {
         float _stepX = ( m_domainMax - m_domainMin ) / ( ( float )( SAMPLE_COUNT_X - 1 ) );
         float _stepZ = ( m_domainMax - m_domainMin ) / ( ( float )( SAMPLE_COUNT_Z - 1 ) );
@@ -159,7 +159,7 @@ namespace optimization
         m_dataProxy->resetArray( _dataArray );
     }
 
-    void SurfaceHandler::_resetParticlesPositions()
+    void SurfaceViz::_resetParticlesPositions()
     {
         if ( m_objFcn == NULL )
         {
@@ -194,7 +194,7 @@ namespace optimization
         }
     }
 
-    void SurfaceHandler::updateParticlesPositions( const vector< optimization::Vec >& psoParticles )
+    void SurfaceViz::updateParticlesPositions( const vector< optimization::Vec >& psoParticles )
     {
         if ( psoParticles.size() < NUM_PLOT_PARTICLES )
         {
@@ -212,14 +212,14 @@ namespace optimization
         }
     }
 
-    void SurfaceHandler::updateBestParticle( const optimization::Vec& position )
+    void SurfaceViz::updateBestParticle( const optimization::Vec& position )
     {
         float _y = m_objFcn->eval( position );
 
         m_bestParticle->setPosition( QVector3D( position[0], _y, position[1] ) );
     }
 
-    void SurfaceHandler::updateAvgParticle( const optimization::Vec& position )
+    void SurfaceViz::updateAvgParticle( const optimization::Vec& position )
     {
         float _y = m_objFcn->eval( position );
 

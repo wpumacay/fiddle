@@ -22,7 +22,7 @@ find_package( Qt5 COMPONENTS DataVisualization Core Widgets Gui REQUIRED )
 
 add_executable( qtViz 
                 main.cpp 
-                src/SurfaceHandler.cpp
+                src/SurfaceViz.cpp
                 mainwindow.cpp )
 
 target_link_libraries( qtViz Qt5::Widgets Qt5::DataVisualization optCore )

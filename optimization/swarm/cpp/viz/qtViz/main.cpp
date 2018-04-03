@@ -1,11 +1,13 @@
+
 #include "mainwindow.h"
 #include <QApplication>
 
-int main(int argc, char *argv[])
+int main( int argc, char *argv[] )
 {
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+    QApplication _app( argc, argv );
 
-    return a.exec();
+    viz::MainWindow _mw;
+    _mw.show();
+
+    return _app.exec();
 }
