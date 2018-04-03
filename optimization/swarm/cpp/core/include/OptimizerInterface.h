@@ -52,6 +52,8 @@ namespace optimization
         virtual void end();
         virtual bool stopCondition();
 
+        virtual void changeDomain( float pDomainMin, float pDomainMax );
+
         void update();
 
         // To run parallelly
@@ -63,6 +65,7 @@ namespace optimization
         int ndim() { return m_ndim; }
         int maxIter() { return m_maxIter; }
         int currentIter() { return m_currentIter; }
+        BaseFunction* objFunction() { return m_objFcn; }
         double domainMin() { return m_domainMin; }
         double domainMax() { return m_domainMax; }
         bool isWorking() { return m_isWorking; }

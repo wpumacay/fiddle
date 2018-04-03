@@ -45,12 +45,15 @@ namespace optimization
         void start() override;
         void step() override;
         void end() override;
+        void changeDomain( float pDomainMin, float pDomainMax ) override;
 
         // Accessors
 
         Vec bestPos() { return m_bestPos; }
         double bestCost() { return m_bestCost; }
         Vec avgPosition() { return m_avgPosition; }
+
+        vector< Vec > getParticlesPositions( int size = 1000 );
     };
 
 }

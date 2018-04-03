@@ -10,6 +10,10 @@ find_package( CUDA )
 find_package( OpenMP )
 find_package( Threads REQUIRED )
 
+add_definitions( -DRESOURCE_PATH="${CMAKE_SOURCE_DIR}/res/" )
+
+# message( "resPath: ${CMAKE_SOURCE_DIR}/res/" )
+
 if( CUDA_FOUND )
 
 add_definitions( -DCUDA_SUPPORT_ENABLED )

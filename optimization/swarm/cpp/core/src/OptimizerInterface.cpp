@@ -28,6 +28,11 @@ namespace optimization
 
     void OptimizerInterface::setObjectiveFunction( BaseFunction* objFcn, bool pIsMinimization )
     {
+        if ( m_objFcn != NULL )
+        {
+            delete m_objFcn;
+        }
+
         m_objFcn = objFcn;
         m_isMinimization = pIsMinimization;
     }
@@ -56,6 +61,12 @@ namespace optimization
     bool OptimizerInterface::stopCondition()
     {
         return m_currentIter >= m_maxIter;
+    }
+
+    void OptimizerInterface::changeDomain( float pDomainMin, float pDomainMax )
+    {
+        m_domainMin = pDomainMin;
+        m_domainMax = pDomainMax;
     }
 
     void OptimizerInterface::update()

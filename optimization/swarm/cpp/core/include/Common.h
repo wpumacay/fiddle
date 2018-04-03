@@ -51,7 +51,7 @@ namespace optimization
 		double operator[] ( int indx ) const;
 		double get( int indx ) const;
 		void set( int indx, double val );
-		string toString();
+		string toString() const;
 
 		static double dot( const Vec& v1, const Vec& v2 );
 		static Vec randUniform( int ndim, double pMin, double pMax );

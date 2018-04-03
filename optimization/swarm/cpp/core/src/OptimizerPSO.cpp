@@ -127,4 +127,12 @@ namespace optimization
         // Do nothing for now
     }
 
+    void OptimizerPSO::changeDomain( float pDomainMin, float pDomainMax )
+    {
+        OptimizerInterface::changeDomain( pDomainMin, pDomainMax );
+
+        m_vmin = -m_k * ( m_domainMax - m_domainMin ) / 2.0;
+        m_vmax = m_k * ( m_domainMax - m_domainMin ) / 2.0;
+    }
+
 }

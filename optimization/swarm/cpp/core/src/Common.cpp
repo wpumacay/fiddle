@@ -31,6 +31,8 @@ namespace optimization
     {
         m_ndim = other.m_ndim;
         m_buff = new double[ m_ndim ];
+
+        memcpy( m_buff, other.m_buff, sizeof( double ) * m_ndim );
     }
 
     void Vec::operator= ( const Vec& other )
@@ -80,7 +82,7 @@ namespace optimization
         m_buff[ indx ] = val;
     }
 
-    string Vec::toString()
+    string Vec::toString() const
     {
         string _res = "[ ";
 

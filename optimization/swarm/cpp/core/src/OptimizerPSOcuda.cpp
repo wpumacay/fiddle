@@ -136,5 +136,47 @@ namespace optimization
         // Do nothing for now
     }
 
+    void OptimizerPSOcuda::changeDomain( float pDomainMin, float pDomainMax )
+    {
+        OptimizerInterface::changeDomain( pDomainMin, pDomainMax );
+
+        m_vmin = -m_k * ( m_domainMax - m_domainMin ) / 2.0;
+        m_vmax = m_k * ( m_domainMax - m_domainMin ) / 2.0;
+
+        // Update both host and device information
+        m_particlesHostInfo.domainMin       = m_domainMin;
+        m_particlesHostInfo.domainMax       = m_domainMax;
+        m_particlesHostInfo.vmin            = m_vmin;
+        m_particlesHostInfo.vmax            = m_vmax;
+
+        m_particlesDeviceInfo.domainMin         = m_domainMin;
+        m_particlesDeviceInfo.domainMax         = m_domainMax;
+        m_particlesDeviceInfo.vmin              = m_vmin;
+        m_particlesDeviceInfo.vmax              = m_vmax;
+    }
+
+    vector< Vec > OptimizerPSOcuda::getParticlesPositions( int size )
+    {
+        vector< Vec > _particles;
+
+        for ( int q = 0; q < m_populationSize; q++ )
+        {
+            if ( q >= size )
+            {
+                break;
+            }
+
+            Vec _v = Vec::zeros( m_ndim );
+            
+            for ( int d = 0; d < m_ndim; d++ )
+            {
+                _v.set( d, m_particlesHostInfo.pos[ q * m_ndim + d ] );
+            }
+
+            _particles.push_back( _v );
+        }
+
+        return _particles;
+    }
 
 }

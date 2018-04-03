@@ -71,6 +71,8 @@ namespace optimization
         void step() override;
         void end() override;
 
+        void changeDomain( float pDomainMin, float pDomainMax ) override;
+
         // Accessors
 
         vector< PSOparticle > particles() { return m_particles; }

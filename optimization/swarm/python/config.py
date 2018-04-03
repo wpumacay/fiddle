@@ -58,7 +58,7 @@ class ConfigFcnShafferFcn6 :
         self.MINIMIZE = False
         self.GLOBAL_OPTIMA_POSITION = np.zeros( ( 1, ndim ) )
         self.GLOBAL_OPTIMA_VALUE = 1.0
-        self.DOMAIN = [ -100, 100 ]
+        self.DOMAIN = [ -10, 10 ]
         self.RANGE = [ 0, 1 ]
 
 # ###############################################################
@@ -100,18 +100,22 @@ def GetFcnObj( cId, ndim ) :
 
     if cId == 'Sphere' :
         _fcnObj = benchmarks.BMSphere( ndim, 
+                                       plottingMode = benchmarks.BenchmarkFunction.PLOTTING_MODE_SURFACE,
                                        xmin = _cfgFcn.DOMAIN[0],
                                        xmax = _cfgFcn.DOMAIN[1] )
     elif cId == 'Ackley' :
         _fcnObj = benchmarks.BMAckley( _cfgFcn.A, _cfgFcn.B, _cfgFcn.C, ndim, 
+                                       plottingMode = benchmarks.BenchmarkFunction.PLOTTING_MODE_SURFACE,
                                        xmin = _cfgFcn.DOMAIN[0],
                                        xmax = _cfgFcn.DOMAIN[1] )
     elif cId == 'Schwefel' :
         _fcnObj = benchmarks.BMSchwefel( ndim, 
+                                         plottingMode = benchmarks.BenchmarkFunction.PLOTTING_MODE_SURFACE,
                                          xmin = _cfgFcn.DOMAIN[0],
                                          xmax = _cfgFcn.DOMAIN[1] )
     elif cId == 'ShafferFcn6' :
         _fcnObj = benchmarks.BMShafferFcn6( ndim, 
+                                            plottingMode = benchmarks.BenchmarkFunction.PLOTTING_MODE_SURFACE,
                                             xmin = _cfgFcn.DOMAIN[0],
                                             xmax = _cfgFcn.DOMAIN[1] )
 
