@@ -116,6 +116,12 @@
           <height>26</height>
          </rect>
         </property>
+        <property name="minimum">
+         <number>2</number>
+        </property>
+        <property name="maximum">
+         <number>20</number>
+        </property>
        </widget>
       </widget>
      </item>

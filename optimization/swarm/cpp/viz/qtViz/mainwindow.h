@@ -13,7 +13,7 @@
 
 using namespace std;
 
-#define NUM_PARTICLES 200000
+#define NUM_PARTICLES 100000
 
 namespace Ui 
 {

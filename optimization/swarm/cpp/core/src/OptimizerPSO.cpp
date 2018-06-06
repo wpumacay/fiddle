@@ -73,6 +73,7 @@ namespace optimization
 
         for ( PSOparticle& _p : m_particles )
         {
+            // Update velocity *******************
             _p.vel = m_w * _p.vel + 
                      m_c1 * Vec::randUniform( m_ndim, 0.0, 1.0 ) * ( _p.bestPos - _p.pos ) +
                      m_c2 * Vec::randUniform( m_ndim, 0.0, 1.0 ) * ( m_bestParticle.pos - _p.pos );
@@ -86,10 +87,14 @@ namespace optimization
                 Vec::scale( _p.vel, _v );
             }
 
+            // Update position *******************
+
             _p.pos = _p.pos + _p.vel;
             Vec::clip( _p.pos, m_domainMin, m_domainMax );
 
             _p.cost = m_objFcn->eval( _p.pos );
+
+            // Update personal and global best ***
 
             if ( _isBetter( _p.cost, _p.bestCost ) )
             {

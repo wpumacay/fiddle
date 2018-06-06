@@ -99,10 +99,10 @@ namespace viz
         // Setup optimization resources
 
         m_optimizerGpu = new optimization::OptimizerPSOcuda( m_fcnDims, -500.0, 500.0, 100, NUM_PARTICLES,
-                                                             0.5, 2.0, 2.0, 0.5 );
+                                                             1.0, 2.0, 2.0, 0.75 );
 
         m_optimizerCpu = new optimization::OptimizerPSO( m_fcnDims, -500.0, 500.0, 100, NUM_PARTICLES,
-                                                         0.5, 2.0, 2.0, 0.5 );
+                                                         1.0, 2.0, 2.0, 0.75 );
 
         m_currentOptimizer = m_optimizerCpu;
 
@@ -213,7 +213,7 @@ namespace viz
             }
 
             m_optimizerGpu = new optimization::OptimizerPSOcuda( m_fcnDims, -500.0, 500.0, 100, NUM_PARTICLES,
-                                                                 0.5, 2.0, 2.0, 0.5 );
+                                                                 1.0, 2.0, 2.0, 0.75 );
         }
         
         {
@@ -223,7 +223,7 @@ namespace viz
             }            
 
             m_optimizerCpu = new optimization::OptimizerPSO( m_fcnDims, -500.0, 500.0, 100, NUM_PARTICLES,
-                                                             0.5, 2.0, 2.0, 0.5 );
+                                                             1.0, 2.0, 2.0, 0.75 );
         }
 
         _setupObjectiveFcnById( m_fcnName );
